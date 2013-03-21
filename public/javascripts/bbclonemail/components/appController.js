@@ -1,3 +1,4 @@
+console.log("appController.js");
 // AppController
 // --------------
 //
@@ -10,9 +11,12 @@ BBCloneMail.AppController = (function(App, Marionette){
 
   var AppController = Marionette.Controller.extend({
     constructor: function(options){
+      console.log("\n**AppController - constructor");
       options = options || {};
 
       this.mainRegion = options.mainRegion;
+      this.mainNavRegion = options.mainNavRegion;
+      this.mainFooterRegion = options.mainFooterRegion;
       this.navRegion = options.navRegion;
       this.appSelectorRegion = options.appSelectorRegion;
 
@@ -21,13 +25,16 @@ BBCloneMail.AppController = (function(App, Marionette){
 
     // show this component in the app
     show: function(){
+      console.log("AppController - show");
       this._showAppSelector("mail");
+      console.log("calling method show on this: ", this);
       Marionette.triggerMethod.call(this, "show");
     },
 
     // show the specified component, closing any currently
     // displayed component before showing the new one
     showComponent: function(component){
+      console.log("AppController - showComponent");
       if (this._currentComponent){
         this._currentComponent.close();
       }
@@ -39,11 +46,14 @@ BBCloneMail.AppController = (function(App, Marionette){
     // Show the app selector drop down list, which allows
     // the app to be changed from mail app to contacts app
     _showAppSelector: function(appName){
+      console.log("AppController - _showAppSelector");
+      console.log("appName: ", appName);
       var appSelector = new App.AppSelector({
         region: this.appSelectorRegion,
         currentApp: appName
       });
 
+      console.log("calling AppSelector show()")
       appSelector.show();
     }
   });

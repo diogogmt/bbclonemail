@@ -1,3 +1,14 @@
+// script#app-selector-template(type = "text/html")
+//   option(value="mail") Mail
+//   option(value="contacts") Contacts
+
+
 script#app-selector-template(type = "text/html")
-  option(value="mail") Mail
-  option(value="contacts") Contacts
+  p Menu options
+    ul
+      li
+        a.menu-options(data-category = "displayHosts", href = "#displayHosts") Display Hosts
+      li
+        a.menu-options(data-category = "manageHosts", href = "#manageHosts") Manage Hosts
+      li
+        a.menu-options(data-category = "logs", href = "#logs") Logs

@@ -1,3 +1,4 @@
+console.log("categoryView.js")
 // Navigation Menu
 // ---------------
 //
@@ -19,6 +20,7 @@ BBCloneMail.module("MailApp.Navigation", function(Nav, App, Backbone, Marionette
     },
 
     mailCategoryClicked: function(e){
+      console.log("Nav.CategoryListView.ItemView - mailCategoryClicked");
       e.preventDefault();
 
       var category = $(e.currentTarget).data("category");
@@ -32,15 +34,18 @@ BBCloneMail.module("MailApp.Navigation", function(Nav, App, Backbone, Marionette
   Nav.Menu = Marionette.Controller.extend({
     
     initialize: function(options){
+      console.log("Nav.Menu.Controller - initialize");
       this.region = options.region;
     },
 
     show: function(){
+      console.log("Nav.Menu.Controller - show");
       var showCatListView = _.bind(this._showCatListView, this);
       this._getCategories(showCatListView);
     },
 
     _showCatListView: function(categories){
+      console.log("Nav.Menu.Controller - _showCatListView");
       var view = new Nav.CategoryListView({
         collection: categories
       });
@@ -51,10 +56,12 @@ BBCloneMail.module("MailApp.Navigation", function(Nav, App, Backbone, Marionette
     },
 
     _categorySelected: function(category){
+      console.log("Nav.Menu.Controller - _categorySelected");
       this.trigger("category:selected", category);
     },
 
     _getCategories: function(callback){
+      console.log("Nav.Menu.Controller - _getCategories");
       var categoryLoader = App.request("mail:categories");
       $.when(categoryLoader).then(callback);
     }

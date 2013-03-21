@@ -42,6 +42,7 @@ Marionette.getOption = function(target, optionName){
 // `this.triggerMethod("foo:bar") will trigger the "foo:bar" event and
 // call the "onFooBar" method.
 Marionette.triggerMethod = function(){
+  // console.log("Marionette.triggerMethod");
   var args = Array.prototype.slice.apply(arguments);
   var eventName = args[0];
   var segments = eventName.split(":");
@@ -52,7 +53,7 @@ Marionette.triggerMethod = function(){
     capLetter = segment.charAt(0).toUpperCase();
     methodName += capLetter + segment.slice(1);
   }
-
+  // console.log("methodName: ", methodName)
   this.trigger.apply(this, args);
 
   if (_.isFunction(this[methodName])){

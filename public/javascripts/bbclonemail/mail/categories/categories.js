@@ -19,6 +19,7 @@ BBCloneMail.module("MailApp.Categories", function(Categories, App, Backbone, Mar
   _.extend(Controller.prototype, {
 
     getAll: function(){
+      console.log("getAll")
       var deferred = $.Deferred();
 
       var categoryCollection = new CategoryCollection();
@@ -36,6 +37,7 @@ BBCloneMail.module("MailApp.Categories", function(Categories, App, Backbone, Mar
   // ----------------
 
   Categories.addInitializer(function(){
+    console.log("Categories.addInitializer");
     var controller = new Controller();
     Categories.controller = controller;
 

@@ -1,3 +1,4 @@
+console.log("mailListVIew");
 // Mail Inbox
 // ----------
 //
@@ -40,11 +41,13 @@ BBCloneMail.module("MailApp.Mailboxes", function(Mailboxes, App, Backbone, Mario
 
   Mailboxes.Inbox = Marionette.Controller.extend({
     initialize: function(options){
+      console.log("Mailboxes.Inbox.Controller - initialize");
       this.region = options.region;
       this.email = options.email;
     },
 
     show: function(){
+      console.log("Mailboxes.Inbox.Controller - show");
       var listView = new Mailboxes.MailListView({
         collection: this.email
       });
@@ -55,6 +58,7 @@ BBCloneMail.module("MailApp.Mailboxes", function(Mailboxes, App, Backbone, Mario
     },
 
     _emailSelected: function(view, args){
+      console.log("Mailboxes.Inbox.Controller - _emailSelected");
       this.trigger("email:selected", args.model);
     }
   });

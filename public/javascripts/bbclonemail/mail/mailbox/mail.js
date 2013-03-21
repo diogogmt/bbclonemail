@@ -1,3 +1,4 @@
+console.log("mail.js");
 BBCloneMail.module("MailApp.Mail", function(Mail, App, Backbone, Marionette, $, _){
   "use strict";
 
@@ -17,6 +18,7 @@ BBCloneMail.module("MailApp.Mail", function(Mail, App, Backbone, Marionette, $, 
 
   Mail.Mailbox = Marionette.Controller.extend({
     getAll: function(){
+      console.log("Mail.Mailbox.Controller - getAll");
       var deferred = $.Deferred();
 
       this._getMail(function(mail){
@@ -27,6 +29,7 @@ BBCloneMail.module("MailApp.Mail", function(Mail, App, Backbone, Marionette, $, 
     },
 
     getById: function(id){
+      console.log("Mail.Mailbox.Controller - getById");
       var deferred = $.Deferred();
 
       this._getMail(function(mailList){
@@ -38,6 +41,7 @@ BBCloneMail.module("MailApp.Mail", function(Mail, App, Backbone, Marionette, $, 
     },
 
     getByCategory: function(categoryName){
+      console.log("Mail.Mailbox.Controller - getByCategory");
       var deferred = $.Deferred();
 
       this._getMail(function(unfiltered){
@@ -54,6 +58,7 @@ BBCloneMail.module("MailApp.Mail", function(Mail, App, Backbone, Marionette, $, 
     },
 
     _getMail: function(callback){
+      console.log("Mail.Mailbox.Controller - _getMail");
       var emailCollection = new EmailCollection();
       emailCollection.on("reset", callback);
       emailCollection.fetch();

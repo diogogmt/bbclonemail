@@ -10,6 +10,7 @@ html
     include templates/contact-categories-view-template
     include templates/contact-item-template
     include templates/app-selector-template
+    include templates/log-levels-tab-template
 
   body
     section.header
@@ -29,13 +30,15 @@ html
           | to see how it works.
 
     section.content
-      .container
-        navigation
-          section#app-selector
-          section#navigation
-        article#main
+      .container(style="border: 1px solid blue")
+        navigation(style="border: 1px solid red")
+          section#app-selector(style="border: 1px solid green")
+          section#navigation(style="border: 1px solid gold")
+        div#main-nav(style="border: 1px solid pink; width:610px; height: 50px; margin-left:200px;")
+        article#main(style="border: 1px solid black; margin-left:200px;")
           #loading
             block content
+        div#main-footer(style="border: 1px solid pink; width:610px; height: 50px; margin-left:200px;")
 
     section.footer
       .container
@@ -86,5 +89,6 @@ html
 
     script
       $(function(){
+        console.log("starting BBCloneMail");
         BBCloneMail.start();
       });

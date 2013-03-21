@@ -1,3 +1,4 @@
+console.log("mailItemView.js");
 // Mail Viewer
 // -----------
 //
@@ -19,11 +20,13 @@ BBCloneMail.module("MailApp.Mailboxes", function(Mailboxes, App, Backbone, Mario
   Mailboxes.MailViewer = Marionette.Controller.extend({
 
     initialize: function(options){
+      console.log("Mailboxes.MailViewer.Controller - initialize");
       this.region = options.region;
       this.email = options.email;
     },
 
     show: function(){
+      console.log("Mailboxes.MailViewer.Controller - show");
       var itemView = new Mailboxes.MailView({
         model: this.email
       });
