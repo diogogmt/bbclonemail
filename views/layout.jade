@@ -11,79 +11,81 @@ html
     include templates/contact-item-template
     include templates/app-selector-template
     include templates/log-levels-tab-template
+    include templates/node-item-template
+    include templates/node-nav-template
 
   body
-    section.header
-      .container
-        header
-          h1 BBCloneMail
-          p.tag-line
-            | A 
-            a(href="http://marionettejs.com") Marionette.js 
-            | Reference Application
-        header.help
-          | This application demonstrates the use of 
-          a(href="http://marionettejs.com") Marionette.js 
-          | plugin for BackboneJS. To see it in action, change the selected app 
-          | in the drop list to the left. Be sure to check out 
-          a(href="http://github.com/marionettejs/bbclonemail") the source code 
-          | to see how it works.
+    //- section.header
+    //-   .container
+    //-     header
+    //-       h1 BBCloneMail
+    //-       p.tag-line
+    //-         | A 
+    //-         a(href="http://marionettejs.com") Marionette.js 
+    //-         | Reference Application
+    //-     header.help
+    //-       | This application demonstrates the use of 
+    //-       a(href="http://marionettejs.com") Marionette.js 
+    //-       | plugin for BackboneJS. To see it in action, change the selected app 
+    //-       | in the drop list to the left. Be sure to check out 
+    //-       a(href="http://github.com/marionettejs/bbclonemail") the source code 
+    //-       | to see how it works.
 
     section.content
-      .container(style="border: 1px solid blue")
-        navigation(style="border: 1px solid red")
-          section#app-selector(style="border: 1px solid green")
-          section#navigation(style="border: 1px solid gold")
-        div#main-nav(style="border: 1px solid pink; width:610px; height: 50px; margin-left:200px;")
-        article#main(style="border: 1px solid black; margin-left:200px;")
+      .container
+        navigation
+          section#app-selector
+
+        article#main-nav
+        article#main
           #loading
             block content
-        div#main-footer(style="border: 1px solid pink; width:610px; height: 50px; margin-left:200px;")
+        article#main-footer
 
-    section.footer
-      .container
-        footer
-          ul
-            li
-              | Copyright &copy;2013 
-              a(href="http://mutedsolutions.com") Muted Solutions, LLC. 
-              | All rights reserved. 
-          ul
-            li
-              | BBCloneMail is a reference app for building awesomeness with 
-              a(href="http://backbonejs.org") Backbone.js 
-              | and 
-              a(href="http://marionettejs.com") Marionette.js
-          ul
-            li.title BBCloneMail Source:
-            li
-              a(href="http://github.com/marionettejs/bbclonemail") The Github Project
-            li
-              a(href="http://marionettejs.github.com/bbclonemail/docs/bbclonemail.html") The Annoted Code
-          ul
-            li.title
-               | Find me Twitter:
-            li
-              a(href="http://twitter.com/marionettejs") @marionettejs
-            li
-              a(href="http://twitter.com/derickbailey") @derickbailey
-            li
-              a(href="http://twitter.com/backbonejsclass") @backbonejsclass
-            li
-              a(href="http://twitter.com/mutedsolutions") @mutedsolutions
-          ul
-            li.title
-               | Find me on the web:
-            li
-              a(href="http://marionettejs.com") MarionetteJS.com
-            li
-              a(href="http://backbonetraining.net") BackboneTraining.net
-            li
-              a(href="http://watchmecode.net") WatchMeCode.net
-            li
-              a(href="http://derickbailey.lostechies.com") DerickBailey.lostechies.com
-            li
-              a(href="http://mutedsolutions.com") MutedSolutions.com
+    //- section.footer
+    //-   .container
+    //-     footer
+    //-       ul
+    //-         li
+    //-           | Copyright &copy;2013 
+    //-           a(href="http://mutedsolutions.com") Muted Solutions, LLC. 
+    //-           | All rights reserved. 
+    //-       ul
+    //-         li
+    //-           | BBCloneMail is a reference app for building awesomeness with 
+    //-           a(href="http://backbonejs.org") Backbone.js 
+    //-           | and 
+    //-           a(href="http://marionettejs.com") Marionette.js
+    //-       ul
+    //-         li.title BBCloneMail Source:
+    //-         li
+    //-           a(href="http://github.com/marionettejs/bbclonemail") The Github Project
+    //-         li
+    //-           a(href="http://marionettejs.github.com/bbclonemail/docs/bbclonemail.html") The Annoted Code
+    //-       ul
+    //-         li.title
+    //-            | Find me Twitter:
+    //-         li
+    //-           a(href="http://twitter.com/marionettejs") @marionettejs
+    //-         li
+    //-           a(href="http://twitter.com/derickbailey") @derickbailey
+    //-         li
+    //-           a(href="http://twitter.com/backbonejsclass") @backbonejsclass
+    //-         li
+    //-           a(href="http://twitter.com/mutedsolutions") @mutedsolutions
+    //-       ul
+    //-         li.title
+    //-            | Find me on the web:
+    //-         li
+    //-           a(href="http://marionettejs.com") MarionetteJS.com
+    //-         li
+    //-           a(href="http://backbonetraining.net") BackboneTraining.net
+    //-         li
+    //-           a(href="http://watchmecode.net") WatchMeCode.net
+    //-         li
+    //-           a(href="http://derickbailey.lostechies.com") DerickBailey.lostechies.com
+    //-         li
+    //-           a(href="http://mutedsolutions.com") MutedSolutions.com
 
     include scripts
 

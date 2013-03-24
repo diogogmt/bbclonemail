@@ -266,6 +266,7 @@ Marionette.Controller.extend = Marionette.extend;
 // Ensure it can trigger events with Backbone.Events
 _.extend(Marionette.Controller.prototype, Backbone.Events, {
   close: function(){
+    console.log("**Marionette.Controller.prototype - close");
     this.stopListening();
     this.triggerMethod("close");
     this.unbind();
@@ -389,23 +390,34 @@ _.extend(Marionette.Region.prototype, Backbone.Events, {
   // `onShow` and `close` method on your view, just after showing
   // or just before closing the view, respectively.
   show: function(view){
+    // console.log("Marionette.Region - show");
 
+    // console.log("----ensureEl");
     this.ensureEl();
+    // console.log("----close");
     this.close();
 
+    // console.log("----render");
     view.render();
+    // console.log("----open");
     this.open(view);
 
+    // console.log("----trigger show on view");
+    // console.log("view.show: ", view.show);
     Marionette.triggerMethod.call(view, "show");
+    // console.log("----trigger show on view context view");
     Marionette.triggerMethod.call(this, "show", view);
 
+    // console.log("----set current view to view");
     this.currentView = view;
   },
 
   ensureEl: function(){
+    // console.log("Marionette.Region - ensureEl");
     if (!this.$el || this.$el.length === 0){
       this.$el = this.getEl(this.el);
     }
+    // console.log("----this.$el: ", this.$el);
   },
 
   // Override this method to change how the region finds the
@@ -417,6 +429,9 @@ _.extend(Marionette.Region.prototype, Backbone.Events, {
   // Override this method to change how the new view is
   // appended to the `$el` that the region is managing
   open: function(view){
+    // console.log("Marionette.Region - open");
+    // console.log("----this.$el.html(): ", this.$el.html());
+    // console.log("----view.$el.html(): ", view.$el.html());
     this.$el.empty().append(view.el);
   },
 

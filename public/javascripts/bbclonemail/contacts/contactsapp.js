@@ -122,8 +122,8 @@ BBCloneMail.module("ContactsApp", function(ContactsApp, App){
     },
 
     showViewMore: function(){
-      console.log("ContactsApp.Controller - showViewMore");
-      console.log("currentTab: ", this.currentTab);
+      console.log("******ContactsApp.Controller - showViewMore");
+      console.log("----currentTab: ", this.currentTab);
       var footerView = new ContactsApp.ViewMoreLogsView();
       this.mainFooterRegion.show(footerView);
     },
@@ -149,8 +149,9 @@ BBCloneMail.module("ContactsApp", function(ContactsApp, App){
       console.log("level: ", level);
       this.currentTab = level;
       console.log("this.currentTab: ", this.currentTab);
-      console.log("this.repos[]isFull: ", this.repos[this.currentTab].isLogFull);
-      Marionette.triggerMethod.call(App.ContactsApp.controller, "toggle:viewmore", this.currentTab, !this.repos[this.currentTab].isLogFull);
+      console.log("this.repos[currentTab]: ", this.repos[this.currentTab]);
+      console.log("this.repos[]isFull(): ", this.repos[this.currentTab].isFull());
+      Marionette.triggerMethod.call(App.ContactsApp.controller, "toggle:viewmore", this.currentTab, !this.repos[this.currentTab].isFull());
       this.showContacts();
     },
 
@@ -193,7 +194,12 @@ BBCloneMail.module("ContactsApp", function(ContactsApp, App){
   ContactsApp.addFinalizer(function(){
     console.log("ContactsApp.addFinalizer");
     if (ContactsApp.controller){
-      console.log("---- ContactsApp.controller.close")
+      console.log("---- closing regions");
+      App._regionManager._regions.main.close();
+      App._regionManager._regions.mainNav.close();
+      App._regionManager._regions.mainFooter.close();
+
+      console.log("---- ContactsApp.controller.close");
       ContactsApp.controller.close();
       console.log("---- delete ContactsApp.controller")
       delete ContactsApp.controller;

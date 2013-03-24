@@ -42,8 +42,9 @@ BBCloneMail.AppSelector = (function(App, Marionette){
     appSelected: function(e){
       console.log("AppSelector.SelectorView - appSelected");
       e.preventDefault();
-      console.log("category: ", $(e.currentTarget).data("category"));
-      var name = $(e.currentTarget).val();
+      // console.log("----category: ", $(e.currentTarget).data("category"));
+      var name = $(e.currentTarget).data("category");
+      console.log("----name: ", name);
       this.trigger("app:selected", name);
     },
 

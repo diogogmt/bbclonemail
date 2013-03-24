@@ -1,9 +1,18 @@
 script#email-preview-template(type = "text/template")
   header
-    a(href != "#mail/inbox/<%= id %>")
-      span.from
-        |<%= from %>
-      span.subject
-        |<%= subject %>
-      span.date
-        |<%= date %>
+    a(href != "#mail/inbox/<%= ip %>") List Instances
+    div
+      |IP
+      b <%= ip %>
+    div
+      |Hypervisor
+      b <%= hypervisor %>
+    div
+      |Load
+      b <%= load %>
+    div
+      |MemFree
+      b <%= memFree %>
+    div
+      |MemUsed
+      b <%= memUsed %>

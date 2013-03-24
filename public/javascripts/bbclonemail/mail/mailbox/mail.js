@@ -6,11 +6,30 @@ BBCloneMail.module("MailApp.Mail", function(Mail, App, Backbone, Marionette, $, 
   // --------
 
   var Email = Backbone.Model.extend({
+    defaults: {
+      ip: '',
+      hypervisor: '',
+      load: '',
+      memFree: '',
+      memUsed: '',
+    },
+
+    initialize: function () {
+      console.log("Email.Model - initialize");
+    },
+
   });
 
   var EmailCollection = Backbone.Collection.extend({
     model: Email,
-    url: "/email"
+    url: "http://142.204.133.138:3000/list/models/hosts",
+
+    parse: function (response) {
+      console.log("****ContactCollection - parse");
+      console.log("response: ", response);
+      console.log("response.length: ", response.length);
+      return response.hosts;
+    },
   });
 
   // Mailbox Controller
@@ -22,6 +41,7 @@ BBCloneMail.module("MailApp.Mail", function(Mail, App, Backbone, Marionette, $, 
       var deferred = $.Deferred();
 
       this._getMail(function(mail){
+        console.log("mail: ", mail)
         deferred.resolve(mail);
       });
 

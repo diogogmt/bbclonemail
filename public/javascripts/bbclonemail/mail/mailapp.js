@@ -11,8 +11,9 @@ BBCloneMail.module("MailApp", function(MailApp, App){
     },
     
     showInbox: function(){
-      console.log("MailApp.Controller - showInboc");
+      console.log("MailApp.Controller - showInbox");
       var mailbox = new MailApp.Mail.Mailbox();
+      console.log("mailbox: ", mailbox)
       $.when(mailbox.getAll())
         .then(this._showMailList);
 

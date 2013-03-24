@@ -59,6 +59,7 @@ var Contact = Backbone.Model.extend({
       this.type = options.type || 'redis';
       this.level = options.level || 'error';
       this.viewMore =  options.viewMore || true;
+      this.repo = options.repo;
     },
 
     url: function () {
@@ -94,14 +95,19 @@ var Contact = Backbone.Model.extend({
     },
 
     parse: function (response) {
-      console.log("ContactCollection - parse");
+      console.log("****ContactCollection - parse");
+      console.log("response.length: ", response.length);
+      console.log("this.rows: ", this.rows);
+      console.log("this.start: ", this.start);
+
       if (response.length < this.rows - this.start) {
         // Trigger signal to hide viewMore button
         this.viewMore = false;
         // this.trigger("change:viewMoreBtn");
         console.log("----****trigerring toggle:view more event");
         // App.vent.trigger("toggle:viewmore", true);
-        Marionette.triggerMethod.call(App.ContactsApp.controller, "toggle:viewmore", this.level, false);
+        this.repo.toggleIsFull(true);
+        // Marionette.triggerMethod.call(App.ContactsApp.controller, "toggle:viewmore", this.level, false);
 
       }
 
@@ -126,7 +132,8 @@ var Contact = Backbone.Model.extend({
     initialize: function (options) {
       console.log("Contacts.Repository - initialize");
       this.options = options;
-      this.isLogFull = false;
+      this.options.repo = this;
+      this._isFull = false;
       this.contactCollection = new ContactCollection(this.options);
       // console.log("options: ", options);
     },
@@ -161,12 +168,17 @@ var Contact = Backbone.Model.extend({
     toggleIsFull: function (flag) {
       console.log("Contatcs.Repository - toggleIsFull");
       console.log("flag: ", flag);
-      this.isLogFull = flag;
+      this._isFull = flag;
     },
 
     loadData: function () {
       console.log("Contacts.Repository - loadData");
       this.contactCollection.fetch();
+    },
+
+    isFull: function () {
+      console.log("Contacts.Repository - isFull");
+      return this._isFull;
     }
 
   });
