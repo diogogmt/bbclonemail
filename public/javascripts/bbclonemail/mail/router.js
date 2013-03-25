@@ -12,7 +12,6 @@ BBCloneMail.module("MailApp", {
       routes: {
         "": "showInbox",
         "mail": "showInbox",
-        "mail/categories/:id": "showMailByCategory",
         "mail/inbox/:id": "showMailById"
       },
 
@@ -22,6 +21,8 @@ BBCloneMail.module("MailApp", {
         console.log("MailApp.Router - before");
         App.startSubApp("MailApp", {
           mainRegion: App.main,
+          mainNavRegion: App.mainNav,
+          mainFooterRegion: App.mainFooter,
           navRegion: App.nav,
           appSelectorRegion: App.appSelector
         });
@@ -37,10 +38,10 @@ BBCloneMail.module("MailApp", {
         App.MailApp.controller.showMailById(id);
       },
 
-      showMailByCategory: function(category){
-        console.log("MailApp.Router - showMailByCategory");
-        App.MailApp.controller.showMailByCategory(category);
-      }
+      // showMailByCategory: function(category){
+      //   console.log("MailApp.Router - showMailByCategory");
+      //   App.MailApp.controller.showMailByCategory(category);
+      // }
     });
 
     // Initializer

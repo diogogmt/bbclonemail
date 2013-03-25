@@ -33,7 +33,7 @@ BBCloneMail.module("NodesApp", function(NodesApp, App){
       console.log("NodesApp.NavView - deleteDaemon");
       var ip = $(e.currentTarget).data("ip");
       console.log("ip: ", ip);
-      Marionette.triggerMethod.call(NodesApp.controller, "node:create", ip);
+      Marionette.triggerMethod.call(NodesApp.controller, "node:delete", ip);
       // daemon.destroy({success: function(model, response) {
       //   app.Daemons.remove(daemon);
       // }});

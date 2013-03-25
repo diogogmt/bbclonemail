@@ -5,62 +5,60 @@ BBCloneMail.module("MailApp", function(MailApp, App){
   // Controller
   // ----------
   MailApp.Controller = App.AppController.extend({
-    initialize: function(){
+    initialize: function(options){
       console.log("MailApp.Controller - initialize");
+      options = options || {};
+      this.mailbox = options.mailbox;
       _.bindAll(this, "_showMail", "_showMailList");
     },
     
     showInbox: function(){
       console.log("MailApp.Controller - showInbox");
-      var mailbox = new MailApp.Mail.Mailbox();
-      console.log("mailbox: ", mailbox)
-      $.when(mailbox.getAll())
-        .then(this._showMailList);
+      // var mailbox = new MailApp.Mail.Mailbox();
+      console.log("this.mailbox: ", this.mailbox);
+      var that = this;
+      $.when(this.mailbox.getAll()).then(function (emailList) {
+        that.mainNavRegion.close();
+        that._showMailList(emailList);
+      });
 
       Backbone.history.navigate("#mail");
     },
 
     showMailById: function(id){
       console.log("MailApp.Controller - showMailById");
-      var mailbox = new MailApp.Mail.Mailbox();
-      $.when(mailbox.getById(id))
-        .then(this._showMail);
-    },
+      // var mailbox = new MailApp.Mail.Mailbox();
+      var that = this;
+      $.when(this.mailbox.getById(id)).then(function (email) {
+        console.log("---email: ", email);
+        console.log("that.mailbox.getEmailCollection(): ", that.mailbox.getEmailCollection());
+        var host = that.mailbox.getEmailCollection().get(id);
+        console.log("----id: ", id);
+        console.log("----host: ", host);
 
-    showMailByCategory: function(category){
-      console.log("MailApp.Controller - showMailByCategory");
-      var mailbox = new MailApp.Mail.Mailbox();
-      $.when(mailbox.getByCategory(category))
-        .then(this._showMailList);
+        var hostJSON = JSON.stringify(host);
+        console.log("----hostJSON: ", hostJSON);
 
-      Backbone.history.navigate("#mail/categories/" + category);
+        // var navView = new MailApp.Mailboxes.MailPreview(hostJSON);
+        var navView = new MailApp.Mailboxes.MailPreview({
+          model: host
+        });
+        console.log("----navView: ", navView);
+        console.log("---- this.mainNavRegion: ", that.mainNavRegion);
+        // navView.render();
+        that.mainNavRegion.show(navView);
+        console.log("---- this.mainNavRegion: ", that.mainNavRegion);
+        that._showMail(email);
+      });
+
+      
     },
 
     onShow: function(){
       console.log("MailApp.Controller - onShow");
-      this._showCategories();
+      // this._showCategories();
     },
 
-    // show the list of categories for the mail app
-    _showCategories: function(){
-      console.log("MailApp.Controller - _showCategories");
-      var categoryNav = new App.MailApp.Navigation.Menu({
-        region: this.navRegion
-      });
-
-      this.listenTo(categoryNav, "category:selected", this._categorySelected);
-
-      categoryNav.show();
-    },
-
-    _categorySelected: function(category){
-      console.log("MailApp.Controller - _categorySelected");
-      if (category){
-        this.showMailByCategory(category);
-      } else {
-        this.showInbox();
-      }
-    },
 
     // show a single email in the app
     _showMail: function(email){
@@ -100,11 +98,18 @@ BBCloneMail.module("MailApp", function(MailApp, App){
   // ------------
 
   MailApp.addInitializer(function(args){
-    console.log("creating mailApp controller")
+    console.log("MailApp.addInitializer");
+    console.log("----args: ", args);
+    console.log("----creating mailApp controller")
+    var mailbox = new MailApp.Mail.Mailbox();
+
     MailApp.controller = new MailApp.Controller({
-      mainRegion: args.mainRegion,
       navRegion: args.navRegion,
-      appSelectorRegion: args.appSelectorRegion
+      mainNavRegion: args.mainNavRegion,
+      mainRegion: args.mainRegion,
+      mainFooterRegion: args.mainFooterRegion,
+      appSelectorRegion: args.appSelectorRegion,
+      mailbox: mailbox
     });
 
     console.log("showing MailApp.controller")
