@@ -12,6 +12,7 @@ BBCloneMail = (function(Backbone, Marionette){
     main: "#content-three",
     mainFooter: "#content-four",
     appSelector: "#navigation",
+    tempHolder: "#temp-holder",
   });
   // appSelector: "#app-selector"
 

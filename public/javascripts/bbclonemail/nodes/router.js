@@ -21,7 +21,8 @@ BBCloneMail.module("NodesApp", {
           mainNavRegion: App.mainNav,
           mainFooterRegion: App.mainFooter,
           navRegion: App.nav,
-          appSelectorRegion: App.appSelector
+          appSelectorRegion: App.appSelector,
+          tempHolderRegion: App.tempHolder
         });
       },
 
@@ -29,6 +30,13 @@ BBCloneMail.module("NodesApp", {
         console.log("Nodes.Router - showNodes");
         var curPage = "WebVirt Nodes Management"
         App.NodesApp.controller.showBreadcrumbs(curPage);
+        console.log("----showing loading icon");
+        App.NodesApp.controller.showLoadingIcon(App.NodesApp.controller.mainRegion);
+
+        console.log("----showing add widgets");
+        App.NodesApp.controller.showAddWidgets();
+
+        console.log("----showing nodes");
         App.NodesApp.controller.showNodes();
       }
     });

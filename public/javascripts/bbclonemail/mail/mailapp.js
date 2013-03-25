@@ -114,6 +114,7 @@ BBCloneMail.module("MailApp", function(MailApp, App){
       mainRegion: args.mainRegion,
       mainFooterRegion: args.mainFooterRegion,
       appSelectorRegion: args.appSelectorRegion,
+      tempHolderRegion: args.tempHolderRegion,
       mailbox: mailbox
     });
 
@@ -123,9 +124,23 @@ BBCloneMail.module("MailApp", function(MailApp, App){
   });
 
   MailApp.addFinalizer(function(){
+    console.log("\n\n***MailApp.addFinalizer");
     if (MailApp.controller){
-      console.log("closing MailApp.controller")
+      console.log("closing MailApp.controller");
+
+      App._regionManager._regions.main.close();
+      App._regionManager._regions.mainNav.close();
+      App._regionManager._regions.mainFooter.close();
+      
+      // Assign a dummy place holder to all regions so the callbacks won't
+      // interfer with other Apps
+      MailApp.controller.mainRegion = MailApp.controller.tempHolderRegion;
+      MailApp.controller.mainNavRegion = MailApp.controller.tempHolderRegion;
+      MailApp.controller.mainFooterRegion = MailApp.controller.tempHolderRegion;
+      MailApp.controller.content1Region = MailApp.controller.tempHolderRegion;
+      MailApp.controller.navRegion = MailApp.controller.tempHolderRegion;
       MailApp.controller.close();
+      
       delete MailApp.controller;
     }
   });

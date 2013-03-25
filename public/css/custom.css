@@ -172,3 +172,8 @@ table.instance {
   list-style-type: none;    
   margin:0;
 }
+
+#temp-holder {
+  display: none;
+  visibility: hidden;
+}

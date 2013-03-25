@@ -7,7 +7,21 @@ BBCloneMail.module("NodesApp", function(NodesApp, App){
 
   NodesApp.NodeView = Marionette.ItemView.extend({
     template: "#node-item-template",
-    tagName: "li"
+
+    tagName: "li",
+
+    events: {
+      'click .deleteBtn':  'deleteDaemon',
+    },
+
+    deleteDaemon: function (e) {
+      console.log("NodesApp.NavView - deleteDaemon");
+      var ip = $(e.currentTarget).data("ip");
+      console.log("----ip: ", ip);
+      console.log("----trigerring method node:delete");
+      Marionette.triggerMethod.call(NodesApp.controller, "node:delete", ip);
+    },
+
   });
 
   NodesApp.NodeListView = Marionette.CollectionView.extend({
@@ -19,25 +33,10 @@ BBCloneMail.module("NodesApp", function(NodesApp, App){
   
 
   NodesApp.NavView = Marionette.ItemView.extend({
-    // template: "#contact-categories-view-template"
     template: "#node-nav-template",
 
     events: {
-      // "click .log-level-btn": "showLogs"
-      // "click button": "showLogs"
-      'click .deleteBtn':  'deleteDaemon',
       'click #addDaemon': 'createDaemon',
-    },
-
-    deleteDaemon: function (e) {
-      console.log("NodesApp.NavView - deleteDaemon");
-      var ip = $(e.currentTarget).data("ip");
-      console.log("ip: ", ip);
-      Marionette.triggerMethod.call(NodesApp.controller, "node:delete", ip);
-      // daemon.destroy({success: function(model, response) {
-      //   app.Daemons.remove(daemon);
-      // }});
-      // consloe.log("e: ", e);
     },
 
     createDaemon: function (e) {
@@ -47,13 +46,6 @@ BBCloneMail.module("NodesApp", function(NodesApp, App){
       Marionette.triggerMethod.call(NodesApp.controller, "node:create", ip);
     },
 
-    // showLogs: function(e){
-    //   console.log("ContactsApp.Category.ItemView - showLogs");
-    //   e.preventDefault();
-
-    //   var logLevel = $(e.currentTarget).data("level");
-    //   this.trigger("logLevel:changed", logLevel);
-    // }
   });
 
   // Contact App Controller
@@ -89,6 +81,8 @@ BBCloneMail.module("NodesApp", function(NodesApp, App){
           console.log("formData: ", formData);
           console.log("jqForm: ", jqForm);
           console.log("options: ", options);
+          console.log("----showing loading icon");
+          that.showLoadingIcon(that.mainRegion);
           return true;;
         },
         success: function (data) {
@@ -112,6 +106,7 @@ BBCloneMail.module("NodesApp", function(NodesApp, App){
         },
         error: function () {
           console.log("ajaxform error");
+          that.showNodes();
         },
         complete: function () {
           console.log("ajaxform complete");
@@ -121,7 +116,6 @@ BBCloneMail.module("NodesApp", function(NodesApp, App){
 
     onShow: function(){
       console.log("NodesApp.Controller - onShow");
-      this._showNavRegion();
     },
 
     onNodeCreate: function(ip){
@@ -136,20 +130,16 @@ BBCloneMail.module("NodesApp", function(NodesApp, App){
       this.repo.deleteNode(ip);
     },
 
-    _showNavRegion: function(){
-      console.log("NodesApp.Controller - _showNavRegions");
-      var categoryNav = new NodesApp.NavView();
-      console.log("---- this.mainNavRegion: ", this.mainNavRegion);
-      this.mainNavRegion.show(categoryNav);
-      // this.listenTo(categoryNav, "logLevel:changed", this._changeLogLevel);
-
-      console.log("---- this.mainNavRegion: ", this.mainNavRegion);
-      this.bindAjaxUploadForm();
-    },
-
     onNodesShow: function(){
       console.log("NodesApp.Controller - onNodesShow");
       this.showNodes;
+    },
+
+    showAddWidgets: function(){
+      console.log("NodesApp.Controller - showAddWidgetss");
+      var categoryNav = new NodesApp.NavView();
+      this.mainNavRegion.show(categoryNav);
+      this.bindAjaxUploadForm();
     },
 
     showNodes: function(){
@@ -179,12 +169,9 @@ BBCloneMail.module("NodesApp", function(NodesApp, App){
 
   NodesApp.addInitializer(function(args){
     console.log("NodesApp.addInitializer");
-    console.log("args: ", args);
 
-    console.log("creating ContactsApp.Contacts.Repository")
     var repo = new NodesApp.Nodes.Repository();
 
-    console.log("creating NodesApp.Controller");
     NodesApp.controller = new NodesApp.Controller({
       content1Region: args.content1Region,
       mainRegion: args.mainRegion,
@@ -192,12 +179,11 @@ BBCloneMail.module("NodesApp", function(NodesApp, App){
       mainFooterRegion: args.mainFooterRegion,
       navRegion: args.navRegion,
       appSelectorRegion: args.appSelectorRegion,
+      tempHolderRegion: args.tempHolderRegion,
       repo: repo
     });
 
-    console.log("show() NodesApp.controller");
     NodesApp.controller.show();
-    console.log("triggering app:started event for contacts module");
     App.vent.trigger("app:started", "nodes");
   });
 
@@ -208,9 +194,14 @@ BBCloneMail.module("NodesApp", function(NodesApp, App){
       App._regionManager._regions.main.close();
       App._regionManager._regions.mainNav.close();
       App._regionManager._regions.mainFooter.close();
-      console.log("---- NodesApp.controller.close")
+
+      NodesApp.controller.mainRegion = NodesApp.controller.tempHolderRegion;
+      NodesApp.controller.mainNavRegion = NodesApp.controller.tempHolderRegion;
+      NodesApp.controller.mainFooterRegion = NodesApp.controller.tempHolderRegion;
+      NodesApp.controller.content1Region = NodesApp.controller.tempHolderRegion;
+      NodesApp.controller.navRegion = NodesApp.controller.tempHolderRegion;
+
       NodesApp.controller.close();
-      console.log("---- delete NodesApp.controller")
       delete NodesApp.controller;
     }
   });

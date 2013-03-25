@@ -183,6 +183,7 @@ BBCloneMail.module("LogsApp", function(LogsApp, App){
       mainFooterRegion: args.mainFooterRegion,
       navRegion: args.navRegion,
       appSelectorRegion: args.appSelectorRegion,
+      tempHolderRegion: args.tempHolderRegion,
       repos: repos,
       currentTab: "error"
     });
@@ -198,6 +199,12 @@ BBCloneMail.module("LogsApp", function(LogsApp, App){
       App._regionManager._regions.main.close();
       App._regionManager._regions.mainNav.close();
       App._regionManager._regions.mainFooter.close();
+      
+      LogsApp.controller.mainRegion = LogsApp.controller.tempHolderRegion;
+      LogsApp.controller.mainNavRegion = LogsApp.controller.tempHolderRegion;
+      LogsApp.controller.mainFooterRegion = LogsApp.controller.tempHolderRegion;
+      LogsApp.controller.content1Region = LogsApp.controller.tempHolderRegion;
+      LogsApp.controller.navRegion = LogsApp.controller.tempHolderRegion;
 
       LogsApp.controller.close();
       delete LogsApp.controller;

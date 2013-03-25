@@ -43,6 +43,7 @@ BBCloneMail.AppController = (function(App, Marionette){
       this.mainFooterRegion = options.mainFooterRegion;
       this.navRegion = options.navRegion;
       this.appSelectorRegion = options.appSelectorRegion;
+      this.tempHolderRegion = options.tempHolderRegion;
 
       console.log("----creating breadcrumbs");
       this.breadcrumbs = new Breadcrumbs();

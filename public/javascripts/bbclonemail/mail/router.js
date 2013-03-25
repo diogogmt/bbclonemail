@@ -25,7 +25,8 @@ BBCloneMail.module("MailApp", {
           mainNavRegion: App.mainNav,
           mainFooterRegion: App.mainFooter,
           navRegion: App.nav,
-          appSelectorRegion: App.appSelector
+          appSelectorRegion: App.appSelector,
+          tempHolderRegion: App.tempHolder
         });
       },
 
@@ -34,12 +35,21 @@ BBCloneMail.module("MailApp", {
         console.log("---show breadcrumbs");
         var curPage = "Hosts list"
         App.MailApp.controller.showBreadcrumbs(curPage);
+
+        console.log("----showing loading icon");
+        App.MailApp.controller.showLoadingIcon(App.MailApp.controller.mainRegion);
+
         console.log("----show inbox");
         App.MailApp.controller.showInbox();
       },
 
       showMailById: function(id){
         console.log("MailApp.Router - showMailById");
+
+
+        console.log("----showing loading icon");
+        App.MailApp.controller.showLoadingIcon(App.MailApp.controller.mainRegion);
+
         var curPage = id + " instances list";
         var routes = [
           {

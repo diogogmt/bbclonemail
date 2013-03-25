@@ -18,7 +18,8 @@ BBCloneMail.module("LogsApp", {
           mainNavRegion: App.mainNav,
           mainFooterRegion: App.mainFooter,
           navRegion: App.nav,
-          appSelectorRegion: App.appSelector
+          appSelectorRegion: App.appSelector,
+          tempHolderRegion: App.tempHolder
         });
       },
 
