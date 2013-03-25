@@ -7,11 +7,13 @@ BBCloneMail = (function(Backbone, Marionette){
 
   App.addRegions({
     nav: "#navigation",
-    main: "#main",
-    mainNav: "#main-nav",
-    mainFooter: "#main-footer",
-    appSelector: "#app-selector"
+    content1: "#content-one",
+    mainNav: "#content-two",
+    main: "#content-three",
+    mainFooter: "#content-four",
+    appSelector: "#navigation",
   });
+  // appSelector: "#app-selector"
 
   App.on("initialize:after", function(){
     console.log("App.on initialize:after");

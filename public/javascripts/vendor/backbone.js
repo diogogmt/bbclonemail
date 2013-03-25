@@ -779,6 +779,7 @@
     // Smartly update a collection with a change set of models, adding,
     // removing, and merging as necessary.
     update: function(models, options) {
+      console.log("Backbone.Collection - update")
       var model, i, l, existing;
       var add = [], remove = [], modelMap = {};
       var idAttr = this.model.prototype.idAttribute;

@@ -1,21 +1,19 @@
 console.log("contacts - router.js")
-BBCloneMail.module("ContactsApp", {
+BBCloneMail.module("LogsApp", {
   startWithParent: false,
-  define: function(ContactsApp, App){
-
-    // Contacts Router
-    // -----------
+  define: function(LogsApp, App){
 
     var Router = Backbone.Router.extend({
       routes: {
-        "contacts": "showContacts",
+        "logs": "showLogs",
       },
 
       // route filter before method
       // https://github.com/boazsender/backbone.routefilter
       before: function(){
         console.log("Contacts.Router - before");
-        App.startSubApp("ContactsApp", {
+        App.startSubApp("LogsApp", {
+          content1Region: App.content1,
           mainRegion: App.main,
           mainNavRegion: App.mainNav,
           mainFooterRegion: App.mainFooter,
@@ -24,10 +22,21 @@ BBCloneMail.module("ContactsApp", {
         });
       },
 
-      showContacts: function(){
-        console.log("Contacts.Router - showContacts");
-        App.ContactsApp.controller.showContacts();
-        App.ContactsApp.controller.showViewMore();
+      showLogs: function(){
+        console.log("Contacts.Router - showLogs");
+        var curPage = "WebVirt Logs"
+        // Display breadcrumbs
+        App.LogsApp.controller.showBreadcrumbs(curPage);
+        console.log("----showing loading icon");
+        App.LogsApp.controller.showLoadingIcon(App.LogsApp.controller.mainRegion);
+
+
+
+        console.log("----showing log tabs");
+        // Render all views
+        App.LogsApp.controller.showLogTabs();
+        App.LogsApp.controller.showLogItems({fetch: true});
+        // App.LogsApp.controller.showViewMore();
       }
     });
 

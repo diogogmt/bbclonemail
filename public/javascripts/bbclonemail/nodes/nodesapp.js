@@ -186,6 +186,7 @@ BBCloneMail.module("NodesApp", function(NodesApp, App){
 
     console.log("creating NodesApp.Controller");
     NodesApp.controller = new NodesApp.Controller({
+      content1Region: args.content1Region,
       mainRegion: args.mainRegion,
       mainNavRegion: args.mainNavRegion,
       mainFooterRegion: args.mainFooterRegion,

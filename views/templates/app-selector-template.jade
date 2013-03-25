@@ -3,12 +3,29 @@
 //   option(value="contacts") Contacts
 
 
+// script#app-selector-template(type = "text/html")
+//   p Menu options
+//     ul
+//       li
+//         a.menu-options(data-category = "mail", href = "#mail") Mail
+//       li
+//         a.menu-options(data-category = "nodes", href = "#nodes") Manage Nodes
+//       li
+//         a.menu-options(data-category = "contacts", href = "#contacts") Logs
+
+
 script#app-selector-template(type = "text/html")
-  p Menu options
-    ul
-      li
-        a.menu-options(data-category = "mail", href = "#mail") Mail
-      li
-        a.menu-options(data-category = "nodes", href = "#nodes") Manage Nodes
-      li
-        a.menu-options(data-category = "contacts", href = "#contacts") Logs
+  ul.nav.nav-list
+    li.nav-header
+      |Manage
+    li
+      a(href="#mail")
+        |Dashboard
+    li
+      a(href="#nodes")
+        |NodeManager
+    li.nav-header
+      |Admin
+    li
+      a(href="#logs")
+        |Logs

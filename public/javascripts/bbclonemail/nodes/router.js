@@ -16,6 +16,7 @@ BBCloneMail.module("NodesApp", {
       before: function(){
         console.log("Nodes.Router - before");
         App.startSubApp("NodesApp", {
+          content1Region: App.content1,
           mainRegion: App.main,
           mainNavRegion: App.mainNav,
           mainFooterRegion: App.mainFooter,
@@ -26,6 +27,8 @@ BBCloneMail.module("NodesApp", {
 
       showNodes: function(){
         console.log("Nodes.Router - showNodes");
+        var curPage = "WebVirt Nodes Management"
+        App.NodesApp.controller.showBreadcrumbs(curPage);
         App.NodesApp.controller.showNodes();
       }
     });

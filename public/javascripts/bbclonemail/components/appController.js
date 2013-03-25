@@ -6,19 +6,46 @@ console.log("appController.js");
 // guts and implementation detail of showing the
 // lists and individual items
 
+
+
 BBCloneMail.AppController = (function(App, Marionette){
   "use strict";
+
+
+  var LoadingView = Marionette.ItemView.extend({
+    template: "#loading-template",
+  });
+
+  var BreadcrumbsView = Marionette.ItemView.extend({
+    template: "#breadcrumbs-template",
+  });
+
+  var Breadcrumbs = Backbone.Model.extend({
+    defaults: {
+      routes: [],
+      curPage: '',
+    },
+
+    initialize: function () {
+      console.log("Breabcrumbs.Model - initialize");
+    },
+
+  });
 
   var AppController = Marionette.Controller.extend({
     constructor: function(options){
       console.log("\n**AppController - constructor");
       options = options || {};
 
+      this.content1Region = options.content1Region;
       this.mainRegion = options.mainRegion;
       this.mainNavRegion = options.mainNavRegion;
       this.mainFooterRegion = options.mainFooterRegion;
       this.navRegion = options.navRegion;
       this.appSelectorRegion = options.appSelectorRegion;
+
+      console.log("----creating breadcrumbs");
+      this.breadcrumbs = new Breadcrumbs();
 
       Marionette.Controller.prototype.constructor.call(this, options);
     },
@@ -45,6 +72,28 @@ BBCloneMail.AppController = (function(App, Marionette){
       console.log("show component")
       component.show();
       this._currentComponent = component;
+    },
+
+    showBreadcrumbs: function (curPage, routes) {
+      console.log("AppController - showBreadcrumbs");
+      this.content1Region.close();
+
+      this.breadcrumbs.set('routes', routes);
+      this.breadcrumbs.set('curPage', curPage);
+      var navView = new BreadcrumbsView({
+        model: this.breadcrumbs
+      });
+      console.log("----navView: ", navView);
+      console.log("---- this.mainNavRegion: ", this.content1Region);
+      this.content1Region.show(navView);
+    },
+
+    showLoadingIcon: function (region) {
+      console.log("AppController - waitForLoading");
+      console.log("----create LoadingView");
+      var view = new LoadingView();
+      console.log("----show LoadingView");
+      region.show(view);
     },
 
     // Show the app selector drop down list, which allows

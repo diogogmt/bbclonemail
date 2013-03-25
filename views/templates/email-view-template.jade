@@ -1,10 +1,33 @@
 script#email-view-template(type = "text/template")
-  div
-    |IP
-    b <%= ip %>
-  div
-    |ID
-    b <%= id %>
-  div
-    |Status
-    b <%= status %>
+  div.well-small instance-record
+    table.instance
+      tr
+        td.instance-name
+          strong Name:
+          em.muted <%= id %>
+        td.instance-state
+          strong VM Status:
+          strong.text-success <%= status %>
+        td.instance-manage
+          div.btn-group.pull-right
+            a.btn.dropdown-toggle(data-toggle="dropdown", href="#")
+              |Actions
+              span.caret
+            ul.dropdown-menu
+              li.start
+                a(tabindex="-1")
+                  |Start
+              li.shutdown
+                a(tabindex="-1")
+                  |Shutdown
+              li.shutdown
+                a(tabindex="-1")
+                  |Resume
+              li.shutdown
+                a(tabindex="-1")
+                  |Suspend
+              li.shutdown
+                a(tabindex="-1")
+                  |Destory
+            a.btn.btn-primary.refresh(href="#")
+              |Refresh

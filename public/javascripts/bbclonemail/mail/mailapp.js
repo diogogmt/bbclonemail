@@ -19,6 +19,10 @@ BBCloneMail.module("MailApp", function(MailApp, App){
       var that = this;
       $.when(this.mailbox.getAll()).then(function (emailList) {
         that.mainNavRegion.close();
+        var navView = new MailApp.Mailboxes.Content2Emtpy();
+        console.log("----navView: ", navView);
+        console.log("---- this.mainNavRegion: ", that.mainNavRegion);
+        that.mainNavRegion.show(navView);
         that._showMailList(emailList);
       });
 
@@ -104,6 +108,7 @@ BBCloneMail.module("MailApp", function(MailApp, App){
     var mailbox = new MailApp.Mail.Mailbox();
 
     MailApp.controller = new MailApp.Controller({
+      content1Region: args.content1Region,
       navRegion: args.navRegion,
       mainNavRegion: args.mainNavRegion,
       mainRegion: args.mainRegion,

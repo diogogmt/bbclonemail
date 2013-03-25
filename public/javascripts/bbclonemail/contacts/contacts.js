@@ -1,57 +1,38 @@
 console.log("contacts.js");
 
-BBCloneMail.module("ContactsApp.Contacts", function(Contacts, App, Backbone, Marionette, $, _){
+BBCloneMail.module("LogsApp.Logs", function(Logs, App, Backbone, Marionette, $, _){
   "use strict";
 
   // Entities
   // --------
 
-  // var Contact = Backbone.Model.extend({
-  //   initialize: function(){
-  //     console.log("Contact.Model - initialize");
-  //     Backbone.Compute(this);
-  //   },
+  var Log = Backbone.Model.extend({
+    defaults: {
+      'timestamp' : '',
+      'file'      : '',
+      'line'      : '',
+      'message'   : '',
+    },
 
-  //   fullName: { 
-  //     fields: ["firstName", "lastName"], 
-  //     compute: function(fields){
-  //       return fields.lastName + ", " + fields.firstName;
-  //     }
-  //   }
-  // });
+    idAttribute: "id",
 
-var Contact = Backbone.Model.extend({
-  defaults: {
-    'timestamp' : '',
-    'file'      : '',
-    'line'      : '',
-    'message'   : '',
-  },
+    initialize: function () {
+      console.log("Log.Model - initialize");
+    },
 
-  idAttribute: "id",
-
-  initialize: function () {
-    console.log("Contact.Model - initialize");
-  },
-
-  save: function () {
-    console.log("Contact.Model - save");
-    return true;
-  }
-});
+    save: function () {
+      console.log("Log.Model - save");
+      return true;
+    }
+  });
 
 
 
-  // var ContactCollection = Backbone.Collection.extend({
-  //   model: Contact,
-  //   url: "/contacts"
-  // });
-
-  var ContactCollection = Backbone.Collection.extend({
-    model: Contact,
+  var LogCollection = Backbone.Collection.extend({
+    model: Log,
 
     initialize: function (options) {
-      console.log("ContactCollection - initialize");
+      console.log("LogCollection - initialize");
       console.log("options: ", options);
       options = options || {};
       this.start = options.start || 1;
@@ -63,27 +44,45 @@ var Contact = Backbone.Model.extend({
     },
 
     url: function () {
-      console.log("ContactCollection - url");
+      console.log("LogCollection - url");
       var url = "http://142.204.133.138:3000/logs/" + this.type + "/" + this.level + "/" + this.start + "/" + this.rows;
       console.log("url: ", url);
       return url;
     },
 
     fetch: function () {
-      console.log("ContactCollection - fetch");
+      console.log("LogCollection - fetch");
+      var that = this;
       if (this.start === 1) {
         console.log("--- fecthing for the first time");
         var options = {
           success: function (model, response) {
+            console.log("----LogCollection - fetch - success callback");
+            console.log("----LEVEL: ", that.level);
           },
-          // update: true,
-          // remove: false,
-          // merge: false
+          error: function (model, response) {
+            console.log("----LogCollection - fetch - error callback");
+            console.log("----LEVEL: ", that.level);
+          },
+          complete: function (model, response) {
+            console.log("----LogCollection - fetch - complete callback");
+            console.log("----LEVEL: ", that.level);
+          },
         };
       } else {
         console.log("--- logs were already fecthing, this time just  updatind")
         var options = {
           success: function (model, response) {
+            console.log("----LogCollection - fetch - success callback");
+            console.log("----LEVEL: ", that.level);
+          },
+          error: function (model, response) {
+            console.log("----LogCollection - fetch - error callback");
+            console.log("----LEVEL: ", that.level);
+          },
+          complete: function (model, response) {
+            console.log("----LogCollection - fetch - complete callback");
+            console.log("----LEVEL: ", that.level);
           },
           update: true,
           remove: false,
@@ -95,7 +94,7 @@ var Contact = Backbone.Model.extend({
     },
 
     parse: function (response) {
-      console.log("****ContactCollection - parse");
+      console.log("****LogCollection - parse");
       console.log("response.length: ", response.length);
       console.log("this.rows: ", this.rows);
       console.log("this.start: ", this.start);
@@ -103,83 +102,113 @@ var Contact = Backbone.Model.extend({
       if (response.length < this.rows - this.start) {
         // Trigger signal to hide viewMore button
         this.viewMore = false;
-        // this.trigger("change:viewMoreBtn");
-        console.log("----****trigerring toggle:view more event");
-        // App.vent.trigger("toggle:viewmore", true);
-        this.repo.toggleIsFull(true);
-        // Marionette.triggerMethod.call(App.ContactsApp.controller, "toggle:viewmore", this.level, false);
-
+        this.repo.hasSpace(false);
       }
 
       // Increment logs range
       this.start += response.length;
       this.rows += response.length;
       console.log("response: ", response);
+
       return response;
     },
 
     viewMoreStatus: function () {
-      console.log("ContactCollection - viewMoreStatus");
+      console.log("LogCollection - viewMoreStatus");
       return this.viewMore;
     }
   });
 
-  // Contacts Repository
+  // Logs Repository
   // -------------------
 
-  Contacts.Repository = Marionette.Controller.extend({
+  Logs.Repository = Marionette.Controller.extend({
 
     initialize: function (options) {
-      console.log("Contacts.Repository - initialize");
+      console.log("Logs.Repository - initialize");
       this.options = options;
       this.options.repo = this;
-      this._isFull = false;
-      this.contactCollection = new ContactCollection(this.options);
-      // console.log("options: ", options);
+
+      this._hasSpace = true;
+      this._wasFetched = false;
+
+      this.logCollection = new LogCollection(this.options);
     },
 
-    getAll: function(){
-      console.log("Contacts.Repository - getAll");
-      console.log("this.contactCollection: ", this.contactCollection);
-      // var deferred = $.Deferred();
+    // getAll: function(){
+    //   console.log("Logs.Repository - getAll");
+    //   return this.logCollection;
+    // },
 
-      // this._getContacts(function(contacts){
-      //   console.log("Contacts.Repository - _getContacts callback");
-      //   console.log("contacts: ", contacts);
-      //   deferred.resolve(contacts);
-      // });
-
-      // return deferred.promise();
-      return this.contactCollection;
+    hasSpace: function (flag) {
+      console.log("Logs.Repository - hasSpace");
+      console.log("----flag: ", flag);
+      if (!_.isUndefined(flag)) {
+        this._hasSpace = flag;
+      }
+      console.log("----flag: ", flag);
+      return this._hasSpace;
     },
 
-    _getContacts: function(callback){
-      console.log("Contacts.Repository - _getContacts");
-      this.contactCollection.on("reset", callback);
+    wasFetched: function (flag) {
+      console.log("Logs.Repository - hasSpace");
+      console.log("----flag: ", flag);
+      if (!_.isUndefined(flag)) {
+        this._wasFetched = flag;
+      }
+      console.log("----flag: ", flag);
+      return this._wasFetched;
+    },
+
+    _getAll: function (fetch, callback) {
+      console.log("Logs.Repository - _getAll");
+      console.log("----fetch: ", fetch);
+      console.log("----this._wasFetched: ", this._wasFetched);
+      if (!fetch) {
+        callback(this.logCollection);
+        return;
+      }
+
+      this._wasFetched = true;
+
+      this.logCollection.on("sync", callback);
+      console.log("----fecthing LogCollection");
+      this.logCollection.fetch();
+    },
+
+    getAll: function (fetch) {
+      console.log("Logs.Repository - getAll");
+      console.log("----fetch: ", fetch);
+
+      var deferred = $.Deferred();
+      var that = this;
+      this._getAll(fetch, function(){
+        console.log("---_getAll callback");
+        deferred.resolve(that.logCollection);
+      });
+
+      return deferred.promise();
+    },
+
+    _showMore: function (callback) {
+      console.log("Logs.Repository - _showMore");
+      this.logCollection.on("sync", callback);
+      console.log("----fecthing LogCollection");
+      this.logCollection.fetch();
     },
 
     showMore: function () {
-      console.log("Contacts.Repository - showMore");
+      console.log("Logs.Repository - showMore");
 
-      console.log("fecthing collection...");
-      this.contactCollection.fetch();
+      var deferred = $.Deferred();
+      var that = this;
+      this._showMore(function(){
+        console.log("---_showMore callback");
+        deferred.resolve(that.logCollection);
+      });
+
+      return deferred.promise();
     },
-
-    toggleIsFull: function (flag) {
-      console.log("Contatcs.Repository - toggleIsFull");
-      console.log("flag: ", flag);
-      this._isFull = flag;
-    },
-
-    loadData: function () {
-      console.log("Contacts.Repository - loadData");
-      this.contactCollection.fetch();
-    },
-
-    isFull: function () {
-      console.log("Contacts.Repository - isFull");
-      return this._isFull;
-    }
 
   });
 });

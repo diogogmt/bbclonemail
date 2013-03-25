@@ -7,6 +7,12 @@ console.log("mailListVIew");
 BBCloneMail.module("MailApp.Mailboxes", function(Mailboxes, App, Backbone, Marionette, $, _){
   "use strict";
 
+
+  Mailboxes.Content2Emtpy = Marionette.ItemView.extend({
+    template: "#host-content2-empty-template",
+  });
+
+
   // Mail Preview
   // ------------
   // Displays an individual preview line item, when multiple

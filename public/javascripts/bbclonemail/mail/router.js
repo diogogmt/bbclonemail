@@ -20,6 +20,7 @@ BBCloneMail.module("MailApp", {
       before: function(){
         console.log("MailApp.Router - before");
         App.startSubApp("MailApp", {
+          content1Region: App.content1,
           mainRegion: App.main,
           mainNavRegion: App.mainNav,
           mainFooterRegion: App.mainFooter,
@@ -30,11 +31,23 @@ BBCloneMail.module("MailApp", {
 
       showInbox: function(){
         console.log("MailApp.Router - showInbox");
+        console.log("---show breadcrumbs");
+        var curPage = "Hosts list"
+        App.MailApp.controller.showBreadcrumbs(curPage);
+        console.log("----show inbox");
         App.MailApp.controller.showInbox();
       },
 
       showMailById: function(id){
         console.log("MailApp.Router - showMailById");
+        var curPage = id + " instances list";
+        var routes = [
+          {
+            hash: "#mail",
+            name: "Hosts list"
+          }
+        ]
+        App.MailApp.controller.showBreadcrumbs(curPage, routes);
         App.MailApp.controller.showMailById(id);
       },
 

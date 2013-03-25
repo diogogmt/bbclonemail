@@ -46,6 +46,10 @@ BBCloneMail.module("MailApp.Mail", function(Mail, App, Backbone, Marionette, $, 
       load: '',
       memFree: '',
       memUsed: '',
+      active: true,
+      memCritical: false,
+      loadCritical: false,
+      expanded: false
     },
 
     idAttribute: "ip",
@@ -64,7 +68,26 @@ BBCloneMail.module("MailApp.Mail", function(Mail, App, Backbone, Marionette, $, 
       console.log("****ContactCollection - parse");
       console.log("response: ", response);
       console.log("response.length: ", response.length);
-      return response.hosts;
+      response = response || {};
+      var hosts = response.hosts || [];
+      console.log("hosts: ", hosts);
+      var hostsLen = hosts.length;
+      console.log("hostsLen: ", hostsLen);
+      var host;
+      var i;
+      for (i = 0; i < hostsLen; i++) {
+        host = hosts[i];
+        console.log("host: ", host);
+        host.memCritical = (parseFloat(host.memUsed) / (parseFloat(host.memFree)
+          + parseFloat(host.memUsed))) < 0.9
+          ? false
+          : true;
+        host.loadCritical = (parseFloat(host.load) < 1)
+          ? false
+          : true;
+      }
+
+      return hosts;
     },
   });
 

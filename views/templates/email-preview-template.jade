@@ -1,18 +1,66 @@
+// script#email-preview-template(type = "text/template")
+//   li
+//     a(href != "#mail/inbox/<%= ip %>") List Instances
+//     div
+//       |IP
+//       b <%= ip %>
+//     div
+//       |Hypervisor
+//       b <%= hypervisor %>
+//     div
+//       |Load
+//       b <%= load %>
+//     div
+//       |MemFree
+//       b <%= memFree %>
+//     div
+//       |MemUsed
+//       b <%= memUsed %>
+
+
 script#email-preview-template(type = "text/template")
-  li
-    a(href != "#mail/inbox/<%= ip %>") List Instances
-    div
-      |IP
-      b <%= ip %>
-    div
-      |Hypervisor
-      b <%= hypervisor %>
-    div
-      |Load
-      b <%= load %>
-    div
-      |MemFree
-      b <%= memFree %>
-    div
-      |MemUsed
-      b <%= memUsed %>
+  <div class="well-small host-record">
+  <table class="host">
+  <tr>
+  <td class="host-btn">
+  <a  class="btn <%= active ? 'btn-success' : 'btn-danger' %> " href="#mail/inbox/<%= ip %>">
+  <i class="icon-cog"></i>
+  </a>
+  </td>
+  <td class="host-ip">
+  <strong>IP:</strong> <em class="muted"><%= ip %></em>
+  </td>
+  <td class="host-lastactive">
+  </td>
+  <td class="host-state">
+  <strong>Daemon Status:</strong> <strong class="text-success"><%= active ? 'Connected' : 'Disconnected'%> </strong>
+  </td>
+  <td class="host-manage">
+  <button type="button" class="btn" data-toggle="collapse" data-target="#host-<%= ip.split('.').join("_") %>">
+  <i <%= expanded ? 'class="icon-chevron-up"' : 'class="icon-chevron-down"'%> ></i>
+  </button>
+  </td>
+  </tr>
+  </table>
+  <div id="host-<%= ip.split('.').join("_") %>" class="collapse <%= expanded ? 'in' : 'out' %>">
+  <table class="table table-bordered table-condensed host-details">
+  <tr>
+  <th rowspan="2">Hypervisor</th>
+  <th>Type</th>
+  <td><%= hypervisor %></td>
+  </tr>
+  <tr>
+  <th class="<%= loadCritical === true ? "text-error" : "" %>">Load Average</th>
+  <td class="<%= loadCritical === true ? "text-error" : "" %>"><%= load %></td>
+  <tr>
+  <th rowspan="2">RAM</th>
+  <th class="<%= memCritical === true ? "text-error" : "" %>">Used</th>
+  <td><%= memUsed %>gb</td>
+  </tr>
+  <tr>
+  <th class="<%= memCritical === true ? "text-error" : "" %>">Free</th>
+  <td><%= memFree %>gb</td>
+  </tr>
+  </table>
+  </div>
+  </div>

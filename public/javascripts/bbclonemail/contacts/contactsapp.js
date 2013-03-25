@@ -1,18 +1,18 @@
-console.log("contactsapp.js");
-BBCloneMail.module("ContactsApp", function(ContactsApp, App){
+console.log("LogsApp.js");
+BBCloneMail.module("LogsApp", function(LogsApp, App){
   "use strict";
  
   // Contact List Views
   // ------------------
 
-  ContactsApp.ContactView = Marionette.ItemView.extend({
+  LogsApp.ContactView = Marionette.ItemView.extend({
     // template: "#contact-item-template",
     template: "#log-item-template",
     tagName: "li"
   });
 
-  ContactsApp.ContactListView = Marionette.CollectionView.extend({
-    itemView: ContactsApp.ContactView,
+  LogsApp.ContactListView = Marionette.CollectionView.extend({
+    itemView: LogsApp.ContactView,
     tagName: "ul",
     id: "contact-list",
     className: "contact-list"
@@ -21,17 +21,17 @@ BBCloneMail.module("ContactsApp", function(ContactsApp, App){
   // Category View
   // -------------
 
-  ContactsApp.CategoryView = Marionette.ItemView.extend({
+  LogsApp.CategoryView = Marionette.ItemView.extend({
     // template: "#contact-categories-view-template"
     template: "#log-levels-tab-template",
 
     events: {
-      "click .log-level-btn": "showLogs"
-      // "click button": "showLogs"
+      "click .log-level-btn": "showLogItems"
+      // "click button": "showLogItems"
     },
 
-    showLogs: function(e){
-      console.log("ContactsApp.Category.ItemView - showLogs");
+    showLogItems: function(e){
+      console.log("LogsApp.Category.ItemView - showLogItems");
       e.preventDefault();
 
       var logLevel = $(e.currentTarget).data("level");
@@ -39,120 +39,129 @@ BBCloneMail.module("ContactsApp", function(ContactsApp, App){
     }
   });
 
-  ContactsApp.ViewMoreLogsView = Marionette.ItemView.extend({
+  LogsApp.ViewMoreLogsView = Marionette.ItemView.extend({
     template: "#view-more-logs-template",
 
     events: {
       "click .view-more-logs-btn": "viewMoreLogs"
-      // "click button": "showLogs"
     },
 
     viewMoreLogs: function(e){
-      console.log("ContactsApp.ViewMoreLogsView.ItemView - viewMoreLogs");
+      console.log("LogsApp.ViewMoreLogsView.ItemView - viewMoreLogs");
       e.preventDefault();
 
-      // var logLevel = $(e.currentTarget).data("level");
+      console.log("----showing loading icon");
+      LogsApp.controller.showLoadingIcon(LogsApp.controller.mainFooterRegion);
+
       this.trigger("more:logs", true);
-      Marionette.triggerMethod.call(ContactsApp.controller, "more:logs", 123);
+      Marionette.triggerMethod.call(LogsApp.controller, "more:logs", 123);
     }
   });
 
   // Contact App Controller
   // -----------------------
-
-  ContactsApp.Controller = App.AppController.extend({
+  LogsApp.Controller = App.AppController.extend({
     initialize: function(options){
-      console.log("ContactsApp.Controller - initialize");
-      this.repo = options.repo;
+      console.log("LogsApp.Controller - initialize");
+      // An array containing the repos for all different log levels
       this.repos = options.repos;
+      // Holds which log level tab the user selected
       this.currentTab = options.currentTab;
     },
 
+    changeLogLevel: function (level) {
+      console.log("LogsApp.Controller - changeLogLevel");
+      console.log("----showing loading icon");
+      App.LogsApp.controller.showLoadingIcon(LogsApp.controller.mainRegion);
+      LogsApp.controller.mainFooterRegion.close();
+
+      this.currentTab = level;
+      // Triggers an event indicating if the selected log level repo is full and sets the visibiity on the "View More" btn
+      var hasSpace = this.repos[this.currentTab].hasSpace();
+      console.log("---- hasSpace? ", hasSpace ? "YES" : "NO");
+      Marionette.triggerMethod.call(App.LogsApp.controller, "toggle:viewmore", this.currentTab, hasSpace);
+      var wasFetched = this.repos[this.currentTab].wasFetched();
+      console.log("----wasFetched: ", wasFetched);
+      this.showLogItems({fetch: !wasFetched});
+    },
+
+    // It's invoked by the AppController before the router kicks in
+    // Should be used to initialize common pieces shared by all sub-apps
     onShow: function(){
-      console.log("ContactsApp.Controller - onShow");
-      this._showCategories();
+      console.log("LogsApp.Controller - onShow");
     },
 
     onToggleViewmore: function(level, flag){
-      console.log("ContactsApp.Controller - onToggleViewmore");
-      console.log("level: ", level);
-      console.log("flag: ", flag);
-      this.repos[level].toggleIsFull(!flag);
-      // Update viewMore button visibility
+      console.log("LogsApp.Controller - onToggleViewmore");
+      console.log("----flag: ", flag);
+      console.log("----level: ", level);
+      this.repos[level].hasSpace(flag);
+
+      // Update "View More" button visibility
       flag
         ? $(".view-more-logs-btn").show()
         : $(".view-more-logs-btn").hide()
-      // this._showCategories();
     },
 
     onMoreLogs: function(){
-      console.log("ContactsApp.Controller - onViewMoreLogs");
-      console.log("currentTab: ", this.currentTab);
-      this.repos[this.currentTab].showMore();
+      console.log("LogsApp.Controller - onMoreLogs");
+      var that = this;
+      $.when(this.repos[this.currentTab].showMore()).then(function (logs) {
+        console.log("---jquery when then");
+        console.log("----logs: ", logs);
+        
+        console.log("----showing View More button");
+        that.showViewMore();
+
+        var hasSpace = that.repos[that.currentTab].hasSpace();
+        console.log("---- hasSpace? ", hasSpace ? "YES" : "NO");
+        Marionette.triggerMethod.call(App.LogsApp.controller, "toggle:viewmore", that.currentTab, hasSpace);
+
+
+      });
+
+      // this.repos[this.currentTab].showMore();
     },
 
-    showContacts: function(){
-      console.log("ContactsApp.Controller - showContacts");
-      console.log("currentTab: ", this.currentTab);
+    showLogItems: function(options){
+      console.log("LogsApp.Controller - showLogItems");
       var that = this;
-      // var categoryNav = new ContactsApp.CategoryView();
-      // categoryNav.render();
-      // console.log("categoryNav: ", categoryNav.$el.html());
-      // this.navRegion.show(categoryNav);
-      // $.when(this.repos[that.currentTab].getAll()).then(function(contacts){
-      //   var view = new ContactsApp.ContactListView({
-      //     collection: contacts
-      //   });
+      options = options || {};
+      var fetch = options.fetch;
+      console.log("----fetch: ", fetch);
 
-      //   that.mainRegion.show(view);
-        // that.mainRegion.$el.prepend(categoryNav.$el.html());
-
-        
-        // this.repos[that.currentTab].getAll();
-        var view = new ContactsApp.ContactListView({
-          collection: this.repos[this.currentTab].getAll()
+      console.log("--when this.repos.getAll");
+      $.when(this.repos[this.currentTab].getAll(fetch)).then(function (logs) {
+        console.log("---jquery when then");
+        console.log("----logs: ", logs);
+        var view = new LogsApp.ContactListView({
+          collection: logs
         });
 
-        that.mainRegion.show(view);
-        // that.mainRegion.$el.prepend(categoryNav.$el.html());
 
-        console.log("Backbone.history.navigate to contacts");
-        Backbone.history.navigate("contacts");
-      // });
+        that.showViewMore();
+        var hasSpace = that.repos[that.currentTab].hasSpace();
+        console.log("---- hasSpace? ", hasSpace ? "YES" : "NO");
+        Marionette.triggerMethod.call(App.LogsApp.controller, "toggle:viewmore", that.currentTab, hasSpace);
+
+        that.mainRegion.show(view);
+
+        Backbone.history.navigate("logs");
+
+      });
+    },
+
+    showLogTabs: function(){
+      console.log("LogsApp.Controller - showLogTabs");
+      var categoryNav = new LogsApp.CategoryView();
+      this.mainNavRegion.show(categoryNav);
+      this.listenTo(categoryNav, "logLevel:changed", this.changeLogLevel);
     },
 
     showViewMore: function(){
-      console.log("******ContactsApp.Controller - showViewMore");
-      console.log("----currentTab: ", this.currentTab);
-      var footerView = new ContactsApp.ViewMoreLogsView();
+      console.log("******LogsApp.Controller - showViewMore");
+      var footerView = new LogsApp.ViewMoreLogsView();
       this.mainFooterRegion.show(footerView);
-    },
-
-    // show the list of categories for the mail app
-    _showCategories: function(){
-      console.log("ContactsApp.Controller - _showCategories");
-      var categoryNav = new ContactsApp.CategoryView();
-      console.log("---- this.mainNavRegion: ", this.mainNavRegion);
-      this.mainNavRegion.show(categoryNav);
-      this.listenTo(categoryNav, "logLevel:changed", this._changeLogLevel);
-
-      console.log("---- this.mainNavRegion: ", this.mainNavRegion);
-    },
-
-    getContacts: function(callback){
-      console.log("ContactsApp.Controller - getContacts");
-      return this.contactsRepo.getAll();
-    },
-
-    _changeLogLevel: function (level) {
-      console.log("ContactsApp.Controller - _changeLogLevel")
-      console.log("level: ", level);
-      this.currentTab = level;
-      console.log("this.currentTab: ", this.currentTab);
-      console.log("this.repos[currentTab]: ", this.repos[this.currentTab]);
-      console.log("this.repos[]isFull(): ", this.repos[this.currentTab].isFull());
-      Marionette.triggerMethod.call(App.ContactsApp.controller, "toggle:viewmore", this.currentTab, !this.repos[this.currentTab].isFull());
-      this.showContacts();
     },
 
   });
@@ -160,49 +169,38 @@ BBCloneMail.module("ContactsApp", function(ContactsApp, App){
   // Initializers and Finalizers
   // ---------------------------
 
-  ContactsApp.addInitializer(function(args){
-    console.log("ContactsApp.addInitializer");
-    console.log("args: ", args);
+  LogsApp.addInitializer(function(args){
+    console.log("LogsApp.addInitializer");
 
     var repos = [];
-    console.log("creating ContactsApp.Contacts.Repository")
-    var repo = new ContactsApp.Contacts.Repository();
-
-    repos['error'] = new ContactsApp.Contacts.Repository({level: 'error'});
-    repos['info'] = new ContactsApp.Contacts.Repository({level: 'info'});
-    repos['error'].loadData();
-    repos['info'].loadData();
-
-    console.log("creating ContactsApp.Controller");
-    ContactsApp.controller = new ContactsApp.Controller({
+    repos['error'] = new LogsApp.Logs.Repository({level: 'error'});
+    repos['info'] = new LogsApp.Logs.Repository({level: 'info'});
+    
+    LogsApp.controller = new LogsApp.Controller({
+      content1Region: args.content1Region,
       mainRegion: args.mainRegion,
       mainNavRegion: args.mainNavRegion,
       mainFooterRegion: args.mainFooterRegion,
       navRegion: args.navRegion,
       appSelectorRegion: args.appSelectorRegion,
-      repo: repo,
       repos: repos,
       currentTab: "error"
     });
 
-    console.log("show() ContactsApp.controller");
-    ContactsApp.controller.show();
-    console.log("triggering app:started event for contacts module");
-    App.vent.trigger("app:started", "contacts");
+    LogsApp.controller.show();
+    App.vent.trigger("app:started", "logs");
+
   });
 
-  ContactsApp.addFinalizer(function(){
-    console.log("ContactsApp.addFinalizer");
-    if (ContactsApp.controller){
-      console.log("---- closing regions");
+  LogsApp.addFinalizer(function(){
+    console.log("LogsApp.addFinalizer");
+    if (LogsApp.controller){
       App._regionManager._regions.main.close();
       App._regionManager._regions.mainNav.close();
       App._regionManager._regions.mainFooter.close();
 
-      console.log("---- ContactsApp.controller.close");
-      ContactsApp.controller.close();
-      console.log("---- delete ContactsApp.controller")
-      delete ContactsApp.controller;
+      LogsApp.controller.close();
+      delete LogsApp.controller;
     }
   });
 

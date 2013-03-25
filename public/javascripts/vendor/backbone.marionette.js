@@ -42,7 +42,7 @@ Marionette.getOption = function(target, optionName){
 // `this.triggerMethod("foo:bar") will trigger the "foo:bar" event and
 // call the "onFooBar" method.
 Marionette.triggerMethod = function(){
-  // console.log("Marionette.triggerMethod");
+  // //console.log("Marionette.triggerMethod");
   var args = Array.prototype.slice.apply(arguments);
   var eventName = args[0];
   var segments = eventName.split(":");
@@ -53,7 +53,7 @@ Marionette.triggerMethod = function(){
     capLetter = segment.charAt(0).toUpperCase();
     methodName += capLetter + segment.slice(1);
   }
-  // console.log("methodName: ", methodName)
+  // //console.log("methodName: ", methodName)
   this.trigger.apply(this, args);
 
   if (_.isFunction(this[methodName])){
@@ -266,7 +266,7 @@ Marionette.Controller.extend = Marionette.extend;
 // Ensure it can trigger events with Backbone.Events
 _.extend(Marionette.Controller.prototype, Backbone.Events, {
   close: function(){
-    console.log("**Marionette.Controller.prototype - close");
+    //console.log("**Marionette.Controller.prototype - close");
     this.stopListening();
     this.triggerMethod("close");
     this.unbind();
@@ -390,34 +390,34 @@ _.extend(Marionette.Region.prototype, Backbone.Events, {
   // `onShow` and `close` method on your view, just after showing
   // or just before closing the view, respectively.
   show: function(view){
-    // console.log("Marionette.Region - show");
+    // //console.log("Marionette.Region - show");
 
-    // console.log("----ensureEl");
+    // //console.log("----ensureEl");
     this.ensureEl();
-    // console.log("----close");
+    // //console.log("----close");
     this.close();
 
-    // console.log("----render");
+    // //console.log("----render");
     view.render();
-    // console.log("----open");
+    // //console.log("----open");
     this.open(view);
 
-    // console.log("----trigger show on view");
-    // console.log("view.show: ", view.show);
+    // //console.log("----trigger show on view");
+    // //console.log("view.show: ", view.show);
     Marionette.triggerMethod.call(view, "show");
-    // console.log("----trigger show on view context view");
+    // //console.log("----trigger show on view context view");
     Marionette.triggerMethod.call(this, "show", view);
 
-    // console.log("----set current view to view");
+    // //console.log("----set current view to view");
     this.currentView = view;
   },
 
   ensureEl: function(){
-    // console.log("Marionette.Region - ensureEl");
+    // //console.log("Marionette.Region - ensureEl");
     if (!this.$el || this.$el.length === 0){
       this.$el = this.getEl(this.el);
     }
-    // console.log("----this.$el: ", this.$el);
+    // //console.log("----this.$el: ", this.$el);
   },
 
   // Override this method to change how the region finds the
@@ -429,9 +429,9 @@ _.extend(Marionette.Region.prototype, Backbone.Events, {
   // Override this method to change how the new view is
   // appended to the `$el` that the region is managing
   open: function(view){
-    // console.log("Marionette.Region - open");
-    // console.log("----this.$el.html(): ", this.$el.html());
-    // console.log("----view.$el.html(): ", view.$el.html());
+    // //console.log("Marionette.Region - open");
+    // //console.log("----this.$el.html(): ", this.$el.html());
+    // //console.log("----view.$el.html(): ", view.$el.html());
     this.$el.empty().append(view.el);
   },
 
@@ -953,7 +953,7 @@ Marionette.CollectionView = Marionette.View.extend({
 
   // constructor
   constructor: function(options){
-    console.log("Marionette.CollectionView - constructor");
+    //console.log("Marionette.CollectionView - constructor");
     this._initChildViewStorage();
 
     var args = Array.prototype.slice.apply(arguments);
@@ -966,7 +966,7 @@ Marionette.CollectionView = Marionette.View.extend({
   // binds to. Override this method to prevent the initial
   // events, or to add your own initial events.
   _initialEvents: function(){
-    console.log("Marionette.CollectionView - _initialEvents");
+    //console.log("Marionette.CollectionView - _initialEvents");
     if (this.collection){
       this.listenTo(this.collection, "add", this.addChildView, this);
       this.listenTo(this.collection, "remove", this.removeItemView, this);
@@ -976,7 +976,7 @@ Marionette.CollectionView = Marionette.View.extend({
 
   // Handle a child item added to the collection
   addChildView: function(item, collection, options){
-    console.log("Marionette.CollectionView - addChildView");
+    //console.log("Marionette.CollectionView - addChildView");
     this.closeEmptyView();
     var ItemView = this.getItemView(item);
     var index = this.collection.indexOf(item);
@@ -986,7 +986,7 @@ Marionette.CollectionView = Marionette.View.extend({
   // Override from `Marionette.View` to guarantee the `onShow` method
   // of child views is called.
   onShowCalled: function(){
-    console.log("Marionette.CollectionView - onShowCalled");
+    //console.log("Marionette.CollectionView - onShowCalled");
     this.children.each(function(child){
       Marionette.triggerMethod.call(child, "show");
     });
@@ -995,7 +995,7 @@ Marionette.CollectionView = Marionette.View.extend({
   // Internal method to trigger the before render callbacks
   // and events
   triggerBeforeRender: function(){
-    console.log("Marionette.CollectionView - triggerBeforeRender");
+    //console.log("Marionette.CollectionView - triggerBeforeRender");
     this.triggerMethod("before:render", this);
     this.triggerMethod("collection:before:render", this);
   },
@@ -1003,7 +1003,7 @@ Marionette.CollectionView = Marionette.View.extend({
   // Internal method to trigger the rendered callbacks and
   // events
   triggerRendered: function(){
-    console.log("Marionette.CollectionView - triggerRendered");
+    //console.log("Marionette.CollectionView - triggerRendered");
     this.triggerMethod("render", this);
     this.triggerMethod("collection:rendered", this);
   },
@@ -1012,7 +1012,7 @@ Marionette.CollectionView = Marionette.View.extend({
   // provide your own implementation of a render function for
   // the collection view.
   render: function(){
-    console.log("Marionette.CollectionView - render");
+    //console.log("Marionette.CollectionView - render");
     this.isClosed = false;
     this.triggerBeforeRender();
     this._renderChildren();
@@ -1024,7 +1024,7 @@ Marionette.CollectionView = Marionette.View.extend({
   // more control over events being triggered, around the rendering
   // process
   _renderChildren: function(){
-    console.log("Marionette.CollectionView - _renderChildren");
+    //console.log("Marionette.CollectionView - _renderChildren");
     this.closeEmptyView();
     this.closeChildren();
 
@@ -1038,7 +1038,7 @@ Marionette.CollectionView = Marionette.View.extend({
   // Internal method to loop through each item in the
   // collection view and show it
   showCollection: function(){
-    console.log("Marionette.CollectionView - showCollection");
+    //console.log("Marionette.CollectionView - showCollection");
     var ItemView;
     this.collection.each(function(item, index){
       ItemView = this.getItemView(item);
@@ -1050,7 +1050,7 @@ Marionette.CollectionView = Marionette.View.extend({
   // a collection of item views, when the collection is
   // empty
   showEmptyView: function(){
-    console.log("Marionette.CollectionView - showEmptyView");
+    //console.log("Marionette.CollectionView - showEmptyView");
     var EmptyView = Marionette.getOption(this, "emptyView");
 
     if (EmptyView && !this._showingEmptyView){
@@ -1064,7 +1064,7 @@ Marionette.CollectionView = Marionette.View.extend({
   // if one exists. Called when a collection view has been
   // rendered empty, and then an item is added to the collection.
   closeEmptyView: function(){
-    console.log("Marionette.CollectionView - closeEmptyView");
+    //console.log("Marionette.CollectionView - closeEmptyView");
     if (this._showingEmptyView){
       this.closeChildren();
       delete this._showingEmptyView;
@@ -1075,7 +1075,7 @@ Marionette.CollectionView = Marionette.View.extend({
   // or from the `itemView` in the object definition. The "options"
   // takes precedence.
   getItemView: function(item){
-    console.log("Marionette.CollectionView - getItemView");
+    //console.log("Marionette.CollectionView - getItemView");
     var itemView = Marionette.getOption(this, "itemView");
 
     if (!itemView){
@@ -1090,7 +1090,7 @@ Marionette.CollectionView = Marionette.View.extend({
   // Render the child item's view and add it to the
   // HTML for the collection view.
   addItemView: function(item, ItemView, index){
-    console.log("Marionette.CollectionView - addItemView");
+    //console.log("Marionette.CollectionView - addItemView");
     // get the itemViewOptions if any were specified
     var itemViewOptions = Marionette.getOption(this, "itemViewOptions");
     if (_.isFunction(itemViewOptions)){
@@ -1126,7 +1126,7 @@ Marionette.CollectionView = Marionette.View.extend({
   // Set up the child view event forwarding. Uses an "itemview:"
   // prefix in front of all forwarded events.
   addChildViewEventForwarding: function(view){
-    console.log("Marionette.CollectionView - addChildViewEventForwarding");
+    //console.log("Marionette.CollectionView - addChildViewEventForwarding");
     var prefix = Marionette.getOption(this, "itemViewEventPrefix");
 
     // Forward all child item view events through the parent,
@@ -1142,14 +1142,14 @@ Marionette.CollectionView = Marionette.View.extend({
 
   // render the item view
   renderItemView: function(view, index) {
-    console.log("Marionette.CollectionView - renderItemView");
+    //console.log("Marionette.CollectionView - renderItemView");
     view.render();
     this.appendHtml(this, view, index);
   },
 
   // Build an `itemView` for every model in the collection.
   buildItemView: function(item, ItemViewType, itemViewOptions){
-    console.log("Marionette.CollectionView - buildItemView");
+    //console.log("Marionette.CollectionView - buildItemView");
     var options = _.extend({model: item}, itemViewOptions);
     var view = new ItemViewType(options);
     return view;
@@ -1157,7 +1157,7 @@ Marionette.CollectionView = Marionette.View.extend({
 
   // get the child view by item it holds, and remove it
   removeItemView: function(item){
-    console.log("Marionette.CollectionView - removeItemView");
+    //console.log("Marionette.CollectionView - removeItemView");
     var view = this.children.findByModel(item);
     this.removeChildView(view);
     this.checkEmpty();
@@ -1165,7 +1165,7 @@ Marionette.CollectionView = Marionette.View.extend({
 
   // Remove the child view and close it
   removeChildView: function(view){
-    console.log("Marionette.CollectionView - removeChildView");
+    //console.log("Marionette.CollectionView - removeChildView");
 
     // shut down the child view properly,
     // including events that the collection has from it
@@ -1184,7 +1184,7 @@ Marionette.CollectionView = Marionette.View.extend({
 
   // helper to show the empty view if the collection is empty
   checkEmpty: function() {
-    console.log("Marionette.CollectionView - checkEmpty");
+    //console.log("Marionette.CollectionView - checkEmpty");
     // check if we're empty now, and if we are, show the
     // empty view
     if (!this.collection || this.collection.length === 0){
@@ -1196,21 +1196,21 @@ Marionette.CollectionView = Marionette.View.extend({
   // Override this method to do something other
   // then `.append`.
   appendHtml: function(collectionView, itemView, index){
-    console.log("Marionette.CollectionView - appendHtml");
+    //console.log("Marionette.CollectionView - appendHtml");
     collectionView.$el.append(itemView.el);
   },
 
   // Internal method to set up the `children` object for
   // storing all of the child views
   _initChildViewStorage: function(){
-    console.log("Marionette.CollectionView - _initChildViewStorage");
+    //console.log("Marionette.CollectionView - _initChildViewStorage");
     this.children = new Backbone.ChildViewContainer();
   },
 
   // Handle cleanup and other closing needs for
   // the collection of views.
   close: function(){
-    console.log("Marionette.CollectionView - close");
+    //console.log("Marionette.CollectionView - close");
     if (this.isClosed){ return; }
 
     this.triggerMethod("collection:before:close");
@@ -1224,7 +1224,7 @@ Marionette.CollectionView = Marionette.View.extend({
   // Close the child views that this collection view
   // is holding on to, if any
   closeChildren: function(){
-    console.log("Marionette.CollectionView - closeChildren");
+    //console.log("Marionette.CollectionView - closeChildren");
     this.children.each(function(child){
       this.removeChildView(child);
     }, this);
