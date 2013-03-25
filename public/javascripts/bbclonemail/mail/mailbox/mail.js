@@ -5,6 +5,40 @@ BBCloneMail.module("MailApp.Mail", function(Mail, App, Backbone, Marionette, $, 
   // Entities
   // --------
 
+  var VmInstance = Backbone.Model.extend({
+    defaults: {
+      id: '',
+      status: '',
+      ip: '',
+    },
+
+    initialize: function () {
+      console.log("VmInstance - initialize");
+    },
+
+  });
+
+  var VmInstanceCollection = Backbone.Collection.extend({
+    model: VmInstance,
+
+    initialize: function (options) {
+      console.log("VmInstanceCollection - initialize");
+      console.log("----options: ", options);
+      options = options || {};
+      this.ip = options.ip;
+      this.url = "http://142.204.133.138:3000/list/vms/" + this.ip;
+      console.log("this.url: ", this.url);
+    },
+
+    parse: function (response) {
+      console.log("VmInstanceCollection - parse");
+      console.log("----response: ", response);
+      return response.instances;
+    },
+  });
+
+
+
   var Email = Backbone.Model.extend({
     defaults: {
       ip: '',
@@ -48,13 +82,16 @@ BBCloneMail.module("MailApp.Mail", function(Mail, App, Backbone, Marionette, $, 
       return deferred.promise();
     },
 
-    getById: function(id){
+    getById: function(ip){
       console.log("Mail.Mailbox.Controller - getById");
+      console.log("----ip: ", ip);
       var deferred = $.Deferred();
 
-      this._getMail(function(mailList){
-        var mail = mailList.get(id);
-        deferred.resolve(mail);
+      this._getVmInstances({ip: ip}, function(instanceList){
+        console.log("----instanceList: ", instanceList);
+        // var mail = mailList.get(id);
+        console.log("----resolving deffered promise");
+        deferred.resolve(instanceList);
       });
 
       return deferred.promise();
@@ -82,6 +119,18 @@ BBCloneMail.module("MailApp.Mail", function(Mail, App, Backbone, Marionette, $, 
       var emailCollection = new EmailCollection();
       emailCollection.on("reset", callback);
       emailCollection.fetch();
+    },
+
+    _getVmInstances: function(options, callback){
+      console.log("Mail.Mailbox.Controller - _getVmInstances");
+      options = options || {};
+      var ip = options.ip;
+      var vmInstanceCollection = new VmInstanceCollection({
+        ip: ip
+      });
+      vmInstanceCollection.on("reset", callback);
+      console.log("----fecthing VmInstanceCollection");
+      vmInstanceCollection.fetch();
     }
   });
 });

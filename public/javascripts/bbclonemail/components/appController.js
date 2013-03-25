@@ -35,10 +35,14 @@ BBCloneMail.AppController = (function(App, Marionette){
     // displayed component before showing the new one
     showComponent: function(component){
       console.log("AppController - showComponent");
+      console.log("----component: ", component);
+      console.log("----this._currentComponent: ", this._currentComponent);
       if (this._currentComponent){
+        console.log("----close current component");
         this._currentComponent.close();
       }
 
+      console.log("show component")
       component.show();
       this._currentComponent = component;
     },

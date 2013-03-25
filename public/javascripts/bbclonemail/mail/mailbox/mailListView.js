@@ -17,9 +17,9 @@ BBCloneMail.module("MailApp.Mailboxes", function(Mailboxes, App, Backbone, Mario
     template: "#email-preview-template",
     tagName: "li",
 
-    triggers: {
-      "click": "selected"
-    }
+    // triggers: {
+    //   "click": "selected"
+    // }
   });
 
   // Mail List View

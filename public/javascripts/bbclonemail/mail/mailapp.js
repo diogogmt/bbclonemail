@@ -65,14 +65,17 @@ BBCloneMail.module("MailApp", function(MailApp, App){
     // show a single email in the app
     _showMail: function(email){
       console.log("MailApp.Controller - _showMail");
+      console.log("----email: ", email);
       var viewer = new App.MailApp.Mailboxes.MailViewer({
         region: this.mainRegion,
         email: email
       });
 
+      console.log("showing component viewer");
       this.showComponent(viewer);
 
-      Backbone.history.navigate("#mail/inbox/" + email.id);
+      console.log("navigation backbone history");
+      Backbone.history.navigate("#mail/inbox/" + email.ip);
     },
 
     // show a list of email in the apps - the inbox, 

@@ -1,19 +1,10 @@
 script#email-view-template(type = "text/template")
-  li
-    header
-      span.from
-        |<%= from %>
-      span.subject
-        |<%= subject %>
-      span.date
-        |<%= date %>
-    article
-      .body
-        |<% if (categories){ %>
-        ul.emailCategories
-          |<% _.each(categories, function(category){ %>
-          li 
-            a(href!="#mail/categories/<%= category %>") <%= category %>
-          |<% }); %>
-        |<% } %>
-        |<%= body %>
+  div
+    |IP
+    b <%= ip %>
+  div
+    |ID
+    b <%= id %>
+  div
+    |Status
+    b <%= status %>

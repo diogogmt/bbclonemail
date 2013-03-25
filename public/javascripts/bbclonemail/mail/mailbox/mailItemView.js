@@ -13,8 +13,12 @@ BBCloneMail.module("MailApp.Mailboxes", function(Mailboxes, App, Backbone, Mario
 
   Mailboxes.MailView = Marionette.ItemView.extend({
     template: "#email-view-template",
+    tagName: "li",
+  });
+
+  Mailboxes.MailListView2 = Marionette.CollectionView.extend({
+    itemView: Mailboxes.MailView,
     tagName: "ul",
-    className: "email-list"
   });
 
   Mailboxes.MailViewer = Marionette.Controller.extend({
@@ -27,11 +31,17 @@ BBCloneMail.module("MailApp.Mailboxes", function(Mailboxes, App, Backbone, Mario
 
     show: function(){
       console.log("Mailboxes.MailViewer.Controller - show");
-      var itemView = new Mailboxes.MailView({
-        model: this.email
+      console.log("---this.email: ", this.email);
+      console.log("creating Marionette.CollectionView")
+      var view = new Mailboxes.MailListView2({
+        collection: this.email
       });
 
-      this.region.show(itemView);
+      console.log("----showing view on region");
+      console.log("view: ", view);
+      this.region.show(view);
+      console.log("this.region: ", this.region);
+      console.log("view: ", view);
     }
   });
 

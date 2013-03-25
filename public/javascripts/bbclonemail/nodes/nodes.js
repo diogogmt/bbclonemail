@@ -80,6 +80,38 @@ var Node = Backbone.Model.extend({
       return deferred.promise();
     },
 
+    createNode: function (ip) {
+      console.log("Nodes.Repository - createNode");
+      console.log("----ip: ", ip);
+      console.log("----destroying node");
+      var node = 
+      this.nodeCollection.create(
+        {
+          ip: ip
+        },
+        {
+          'wait': true,
+          'success': function (model, res) {
+            console.log("nodeCollection.createNode - success");
+            // var ip = model.get('ip');
+            // toastr.success("Daemon with ip " + ip + " was successfuly added.", 'Success!');
+          },
+          'error': function (model, res) {
+            console.log("nodeCollection.createNode - error");
+            // var ip = model.get('ip');
+            // toastr.error("Failed to add daemon " + ip, 'An error occured.');
+          },
+          'complete': function () {
+            console.log("nodeCollection.createNode - complete");
+          },
+        }
+      );
+
+      if (node.validationError) {
+        console.log("Failed to add daemon " + ip, 'An error occured.');
+      }
+    },
+
     deleteNode: function (ip) {
       console.log("Nodes.Repository - deleteNode");
       console.log("----ip: ", ip);
@@ -94,6 +126,7 @@ var Node = Backbone.Model.extend({
       this.nodeCollection = new NodeCollection();
       this.nodeCollection.on("reset", callback);
       this.nodeCollection.on("remove", Marionette.triggerMethod.call(App.NodesApp.controller, "nodes:show"));
+      this.nodeCollection.on("add", Marionette.triggerMethod.call(App.NodesApp.controller, "nodes:show"));
       
       this.nodeCollection.fetch();
     }

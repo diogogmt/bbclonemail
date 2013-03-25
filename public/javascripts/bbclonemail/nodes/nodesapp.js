@@ -26,17 +26,25 @@ BBCloneMail.module("NodesApp", function(NodesApp, App){
       // "click .log-level-btn": "showLogs"
       // "click button": "showLogs"
       'click .deleteBtn':  'deleteDaemon',
+      'click #addDaemon': 'createDaemon',
     },
 
     deleteDaemon: function (e) {
       console.log("NodesApp.NavView - deleteDaemon");
       var ip = $(e.currentTarget).data("ip");
       console.log("ip: ", ip);
-      Marionette.triggerMethod.call(NodesApp.controller, "node:delete", ip);
+      Marionette.triggerMethod.call(NodesApp.controller, "node:create", ip);
       // daemon.destroy({success: function(model, response) {
       //   app.Daemons.remove(daemon);
       // }});
       // consloe.log("e: ", e);
+    },
+
+    createDaemon: function (e) {
+      console.log("NodesApp.NavView - createDaemon");
+      var ip = $("#newDaemon").val();
+      console.log("ip: ", ip);
+      Marionette.triggerMethod.call(NodesApp.controller, "node:create", ip);
     },
 
     // showLogs: function(e){
@@ -116,8 +124,14 @@ BBCloneMail.module("NodesApp", function(NodesApp, App){
       this._showNavRegion();
     },
 
+    onNodeCreate: function(ip){
+      console.log("NodesApp.Controller - onNodeCreate");
+      console.log("creating new node");
+      this.repo.createNode(ip);
+    },
+
     onNodeDelete: function(ip){
-      console.log("NodesApp.Controller - onDeleteNode");
+      console.log("NodesApp.Controller - onNodeDelete");
       console.log("deleting node from repo");
       this.repo.deleteNode(ip);
     },
