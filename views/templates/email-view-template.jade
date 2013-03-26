@@ -1,5 +1,5 @@
 script#email-view-template(type = "text/template")
-  div.well-small instance-record
+  div.well-small.instance-record
     table.instance
       tr
         td.instance-name
@@ -14,20 +14,20 @@ script#email-view-template(type = "text/template")
               |Actions
               span.caret
             ul.dropdown-menu
-              li.start
+              li.instance-action(data-action="start", data-ip!="<%= ip %>", data-name!="<%= id %>")
                 a(tabindex="-1")
                   |Start
-              li.shutdown
+              li.instance-action(data-action="shutdown", data-ip!="<%= ip %>", data-name!="<%= id %>")
                 a(tabindex="-1")
                   |Shutdown
-              li.shutdown
+              li.instance-action(data-action="resume", data-ip!="<%= ip %>", data-name!="<%= id %>")
                 a(tabindex="-1")
                   |Resume
-              li.shutdown
+              li.instance-action(data-action="suspend", data-ip!="<%= ip %>", data-name!="<%= id %>")
                 a(tabindex="-1")
                   |Suspend
-              li.shutdown
+              li.instance-action(data-action="destroy", data-ip!="<%= ip %>", data-name!="<%= id %>")
                 a(tabindex="-1")
                   |Destory
-            a.btn.btn-primary.refresh(href="#")
+            a.btn.btn-primary.refresh(href="#", data-ip!="<%= ip %>")
               |Refresh

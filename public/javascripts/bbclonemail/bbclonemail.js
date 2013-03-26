@@ -40,5 +40,49 @@ BBCloneMail = (function(Backbone, Marionette){
     currentApp.start(args);
   };
 
+  App.ajax = function (options) {
+    console.log("App - ajax");
+    console.log("----options: ", options);
+    var deferred = $.Deferred(function (d) {
+      console.log("----$.Deferred");
+      var defaults = {
+          cache: false,
+          type: 'get',
+          traditional: true,
+          dataType: 'json'
+      },
+      settings = $.extend({}, defaults, options);
+      console.log("----settings: ", settings);
+      d.done(settings.success);
+      d.fail(settings.error);
+      d.done(settings.complete);
+
+      var jqXHRSettings = $.extend({}, settings, {
+        success: function (response, textStatus, jqXHR) {
+          console.log("---ajax success callback");
+          d.resolve(response);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+          console.log("---ajax error callback");
+            console.log(jqXHR);
+            d.reject(jqXHR);
+        },
+        complete: d.resolve
+      });
+
+      console.log("---firing ajax call");
+      $.ajax(jqXHRSettings);
+    });
+
+    var promise = deferred.promise();
+
+    promise.success = deferred.done;
+    promise.error = deferred.fail;
+    promise.complete = deferred.done;
+
+    console.log("---returining promise");
+    return promise;
+  };
+
   return App;
 })(Backbone, Marionette);

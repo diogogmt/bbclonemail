@@ -1,8 +1,8 @@
 console.log("mail/router.js")
-BBCloneMail.module("MailApp", {
+BBCloneMail.module("DashboardApp", {
   startWithParent: false,
 
-  define: function(MailApp, App, Backbone, Marionette, $, _){
+  define: function(DashboardApp, App, Backbone, Marionette, $, _){
     "use strict";
 
     // Mail Router
@@ -10,16 +10,16 @@ BBCloneMail.module("MailApp", {
 
     var Router = Backbone.Router.extend({
       routes: {
-        "": "showInbox",
-        "mail": "showInbox",
-        "mail/inbox/:id": "showMailById"
+        "": "showHosts",
+        "hosts": "showHosts",
+        "hosts/:id": "showInstances"
       },
 
       // route filter before method
       // https://github.com/boazsender/backbone.routefilter
       before: function(){
-        console.log("MailApp.Router - before");
-        App.startSubApp("MailApp", {
+        console.log("DashboardApp.Router - before");
+        App.startSubApp("DashboardApp", {
           content1Region: App.content1,
           mainRegion: App.main,
           mainNavRegion: App.mainNav,
@@ -30,40 +30,40 @@ BBCloneMail.module("MailApp", {
         });
       },
 
-      showInbox: function(){
-        console.log("MailApp.Router - showInbox");
+      showHosts: function(){
+        console.log("DashboardApp.Router - showHosts");
         console.log("---show breadcrumbs");
         var curPage = "Hosts list"
-        App.MailApp.controller.showBreadcrumbs(curPage);
+        App.DashboardApp.controller.showBreadcrumbs(curPage);
 
         console.log("----showing loading icon");
-        App.MailApp.controller.showLoadingIcon(App.MailApp.controller.mainRegion);
+        App.DashboardApp.controller.showLoadingIcon(App.DashboardApp.controller.mainRegion);
 
         console.log("----show inbox");
-        App.MailApp.controller.showInbox();
+        App.DashboardApp.controller.showHosts();
       },
 
-      showMailById: function(id){
-        console.log("MailApp.Router - showMailById");
+      showInstances: function(id){
+        console.log("DashboardApp.Router - showInstances");
 
 
         console.log("----showing loading icon");
-        App.MailApp.controller.showLoadingIcon(App.MailApp.controller.mainRegion);
+        App.DashboardApp.controller.showLoadingIcon(App.DashboardApp.controller.mainRegion);
 
         var curPage = id + " instances list";
         var routes = [
           {
-            hash: "#mail",
+            hash: "#hosts",
             name: "Hosts list"
           }
         ]
-        App.MailApp.controller.showBreadcrumbs(curPage, routes);
-        App.MailApp.controller.showMailById(id);
+        App.DashboardApp.controller.showBreadcrumbs(curPage, routes);
+        App.DashboardApp.controller.showInstances(id);
       },
 
       // showMailByCategory: function(category){
-      //   console.log("MailApp.Router - showMailByCategory");
-      //   App.MailApp.controller.showMailByCategory(category);
+      //   console.log("DashboardApp.Router - showMailByCategory");
+      //   App.DashboardApp.controller.showMailByCategory(category);
       // }
     });
 

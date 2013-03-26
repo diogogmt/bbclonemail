@@ -1,113 +1,102 @@
 console.log("mailapp.js")
-BBCloneMail.module("MailApp", function(MailApp, App){
+BBCloneMail.module("DashboardApp", function(DashboardApp, App){
   "use strict";
 
   // Controller
   // ----------
-  MailApp.Controller = App.AppController.extend({
+  DashboardApp.Controller = App.AppController.extend({
     initialize: function(options){
-      console.log("MailApp.Controller - initialize");
+      console.log("DashboardApp.Controller - initialize");
       options = options || {};
-      this.mailbox = options.mailbox;
-      _.bindAll(this, "_showMail", "_showMailList");
+      this.repo = options.repo;
     },
     
-    showInbox: function(){
-      console.log("MailApp.Controller - showInbox");
-      // var mailbox = new MailApp.Mail.Mailbox();
-      console.log("this.mailbox: ", this.mailbox);
+    showHosts: function(){
+      console.log("DashboardApp.Controller - showHosts");
       var that = this;
-      $.when(this.mailbox.getAll()).then(function (emailList) {
+      $.when(this.repo.getAll()).then(function (emailList) {
         that.mainNavRegion.close();
-        var navView = new MailApp.Mailboxes.Content2Emtpy();
-        console.log("----navView: ", navView);
-        console.log("---- this.mainNavRegion: ", that.mainNavRegion);
+        var navView = new DashboardApp.Dashboard.Content2Emtpy();
         that.mainNavRegion.show(navView);
-        that._showMailList(emailList);
+
+        var inbox = new App.DashboardApp.Dashboard.VirtHosts({
+          region: that.mainRegion,
+          email: emailList
+        });
+
+        that.showComponent(inbox);
       });
 
-      Backbone.history.navigate("#mail");
+      Backbone.history.navigate("#hosts");
     },
 
-    showMailById: function(id){
-      console.log("MailApp.Controller - showMailById");
-      // var mailbox = new MailApp.Mail.Mailbox();
+    showInstances: function(id){
+      console.log("DashboardApp.Controller - showInstances");
       var that = this;
-      $.when(this.mailbox.getById(id)).then(function (email) {
-        console.log("---email: ", email);
-        console.log("that.mailbox.getEmailCollection(): ", that.mailbox.getEmailCollection());
-        var host = that.mailbox.getEmailCollection().get(id);
-        console.log("----id: ", id);
-        console.log("----host: ", host);
-
-        var hostJSON = JSON.stringify(host);
-        console.log("----hostJSON: ", hostJSON);
-
-        // var navView = new MailApp.Mailboxes.MailPreview(hostJSON);
-        var navView = new MailApp.Mailboxes.MailPreview({
+      $.when(this.repo.getById(id)).then(function (email) {
+        var host = that.repo.getEmailCollection().get(id);
+        var navView = new DashboardApp.Dashboard.VirtHostItemView({
           model: host
         });
-        console.log("----navView: ", navView);
-        console.log("---- this.mainNavRegion: ", that.mainNavRegion);
-        // navView.render();
         that.mainNavRegion.show(navView);
-        console.log("---- this.mainNavRegion: ", that.mainNavRegion);
-        that._showMail(email);
+        var viewer = new App.DashboardApp.Dashboard.MailViewer({
+          region: that.mainRegion,
+          email: email
+        });
+
+        that.showComponent(viewer);
+
+        Backbone.history.navigate("#hosts/" + email.ip);
       });
 
       
     },
 
     onShow: function(){
-      console.log("MailApp.Controller - onShow");
-      // this._showCategories();
+      console.log("DashboardApp.Controller - onShow");
     },
 
-
-    // show a single email in the app
-    _showMail: function(email){
-      console.log("MailApp.Controller - _showMail");
-      console.log("----email: ", email);
-      var viewer = new App.MailApp.Mailboxes.MailViewer({
-        region: this.mainRegion,
-        email: email
-      });
-
-      console.log("showing component viewer");
-      this.showComponent(viewer);
-
-      console.log("navigation backbone history");
-      Backbone.history.navigate("#mail/inbox/" + email.ip);
+    onInstanceRefresh: function(ip){
+      console.log("DashboardApp.Controller - onInstanceRefresh");
+      this.showInstances(ip);
     },
 
-    // show a list of email in the apps - the inbox, 
-    // or a category, for example
-    _showMailList: function(emailList){
-      console.log("MailApp.Controller - _showMailList");
-      var inbox = new App.MailApp.Mailboxes.Inbox({
-        region: this.mainRegion,
-        email: emailList
-      });
+    onInstanceAction: function(options){
+      console.log("DashboardApp.Controller - onInstanceAction");
+      var that = this;
+      options = options || {};
+      var ip = options.ip;
+      var action = options.action;
+      var name = options.name;
 
-      // when an email is selected, show it
-      inbox.on("email:selected", function(email){
-        this._showMail(email);
-      }, this);
+      var url = "http://142.204.133.138:3000/" + action + "/" + ip + "/" + name;
+      var options = {
+        type: 'PUT',
+        url: url,
+        success: function (response) {
+          toastr.success(response, 'Success.');
+          that.showInstances(ip);
+        },
+        error: function (jqXHR) {
+          toastr.error(jqXHR.responseText, 'Error.');
+        }
+      }
 
-      this.showComponent(inbox);
-    }
+      App.ajax(options).then(function () {
+      })
+
+    },
+
   });
 
   // Initializers
   // ------------
 
-  MailApp.addInitializer(function(args){
-    console.log("MailApp.addInitializer");
-    console.log("----args: ", args);
-    console.log("----creating mailApp controller")
-    var mailbox = new MailApp.Mail.Mailbox();
+  DashboardApp.addInitializer(function(args){
+    console.log("DashboardApp.addInitializer");
+    var repo = new DashboardApp.Dashboard.Repository();
 
-    MailApp.controller = new MailApp.Controller({
+    DashboardApp.controller = new DashboardApp.Controller({
       content1Region: args.content1Region,
       navRegion: args.navRegion,
       mainNavRegion: args.mainNavRegion,
@@ -115,33 +104,29 @@ BBCloneMail.module("MailApp", function(MailApp, App){
       mainFooterRegion: args.mainFooterRegion,
       appSelectorRegion: args.appSelectorRegion,
       tempHolderRegion: args.tempHolderRegion,
-      mailbox: mailbox
+      repo: repo
     });
 
-    console.log("showing MailApp.controller")
-    MailApp.controller.show();
+    DashboardApp.controller.show();
     App.vent.trigger("app:started", "mail");
   });
 
-  MailApp.addFinalizer(function(){
-    console.log("\n\n***MailApp.addFinalizer");
-    if (MailApp.controller){
-      console.log("closing MailApp.controller");
-
+  DashboardApp.addFinalizer(function(){
+    if (DashboardApp.controller){
       App._regionManager._regions.main.close();
       App._regionManager._regions.mainNav.close();
       App._regionManager._regions.mainFooter.close();
-      
+
       // Assign a dummy place holder to all regions so the callbacks won't
       // interfer with other Apps
-      MailApp.controller.mainRegion = MailApp.controller.tempHolderRegion;
-      MailApp.controller.mainNavRegion = MailApp.controller.tempHolderRegion;
-      MailApp.controller.mainFooterRegion = MailApp.controller.tempHolderRegion;
-      MailApp.controller.content1Region = MailApp.controller.tempHolderRegion;
-      MailApp.controller.navRegion = MailApp.controller.tempHolderRegion;
-      MailApp.controller.close();
+      DashboardApp.controller.mainRegion = DashboardApp.controller.tempHolderRegion;
+      DashboardApp.controller.mainNavRegion = DashboardApp.controller.tempHolderRegion;
+      DashboardApp.controller.mainFooterRegion = DashboardApp.controller.tempHolderRegion;
+      DashboardApp.controller.content1Region = DashboardApp.controller.tempHolderRegion;
+      DashboardApp.controller.navRegion = DashboardApp.controller.tempHolderRegion;
+      DashboardApp.controller.close();
       
-      delete MailApp.controller;
+      delete DashboardApp.controller;
     }
   });
 

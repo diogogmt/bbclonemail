@@ -4,11 +4,11 @@ console.log("mailListVIew");
 //
 // Display a list of email
 
-BBCloneMail.module("MailApp.Mailboxes", function(Mailboxes, App, Backbone, Marionette, $, _){
+BBCloneMail.module("DashboardApp.Dashboard", function(Dashboard, App, Backbone, Marionette, $, _){
   "use strict";
 
 
-  Mailboxes.Content2Emtpy = Marionette.ItemView.extend({
+  Dashboard.Content2Emtpy = Marionette.ItemView.extend({
     template: "#host-content2-empty-template",
   });
 
@@ -19,7 +19,7 @@ BBCloneMail.module("MailApp.Mailboxes", function(Mailboxes, App, Backbone, Mario
   // mail items are displayed as a list. When clicked, the
   // email item contents will be displayed.
 
-  Mailboxes.MailPreview = Marionette.ItemView.extend({
+  Dashboard.VirtHostItemView = Marionette.ItemView.extend({
     template: "#email-preview-template",
     tagName: "li",
 
@@ -32,11 +32,11 @@ BBCloneMail.module("MailApp.Mailboxes", function(Mailboxes, App, Backbone, Mario
   // --------------
   // Displays a list of email preview items.
 
-  Mailboxes.MailListView = Marionette.CollectionView.extend({
+  Dashboard.VirtHostsListView = Marionette.CollectionView.extend({
     tagName: "ul",
     className: "email-list",
     itemViewEventPrefix: "email",
-    itemView: Mailboxes.MailPreview
+    itemView: Dashboard.VirtHostItemView
   });
 
   // Mailbox Component Controller
@@ -45,16 +45,16 @@ BBCloneMail.module("MailApp.Mailboxes", function(Mailboxes, App, Backbone, Mario
   // Manages the states / transitions between displaying a
   // list of items, and single email item view
 
-  Mailboxes.Inbox = Marionette.Controller.extend({
+  Dashboard.VirtHosts = Marionette.Controller.extend({
     initialize: function(options){
-      console.log("Mailboxes.Inbox.Controller - initialize");
+      console.log("Dashboard.Inbox.Controller - initialize");
       this.region = options.region;
       this.email = options.email;
     },
 
     show: function(){
-      console.log("Mailboxes.Inbox.Controller - show");
-      var listView = new Mailboxes.MailListView({
+      console.log("Dashboard.Inbox.Controller - show");
+      var listView = new Dashboard.VirtHostsListView({
         collection: this.email
       });
 
@@ -64,7 +64,7 @@ BBCloneMail.module("MailApp.Mailboxes", function(Mailboxes, App, Backbone, Mario
     },
 
     _emailSelected: function(view, args){
-      console.log("Mailboxes.Inbox.Controller - _emailSelected");
+      console.log("Dashboard.Inbox.Controller - _emailSelected");
       this.trigger("email:selected", args.model);
     }
   });
